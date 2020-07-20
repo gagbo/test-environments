@@ -1,3 +1,4 @@
+# Algorand: MainNet
 algorand:
     live:
         libcore:
@@ -10,7 +11,7 @@ algorand:
             repository: git@github.com:Ledger-Coin-Integration-team/ledger-live-common.git
             branch: algorand
         cli_options:
-            - API_ALGORAND_BLOCKCHAIN_EXPLORER_API_ENDPOINT=https://testnet-algorand.api.purestake.io/
+            - API_ALGORAND_BLOCKCHAIN_EXPLORER_API_ENDPOINT=https://mainnet-algorand.api.purestake.io
             - EXPERIMENTAL_CURRENCIES=algorand
     vault:
         libcore:
@@ -25,3 +26,35 @@ algorand:
         vault_front:
             repository: git@github.com:LedgerHQ/ledger-vault-front.git
             branch: coin/stellar
+
+# Algorand: TestNet
+algorand_testnet:
+    live:
+        libcore:
+            repository: git@github.com:Ledger-Coin-Integration-team/lib-ledger-core.git
+            branch: int-algorand-libcorev1
+        bindings:
+            repository: git@github.com:Ledger-Coin-Integration-team/lib-ledger-core-node-bindings.git
+            branch: int-algorand
+        live_common:
+            repository: git@github.com:Ledger-Coin-Integration-team/ledger-live-common.git
+            branch: algorand
+        cli_options:
+            - API_ALGORAND_BLOCKCHAIN_EXPLORER_API_ENDPOINT=https://testnet-algorand.api.purestake.io
+            - EXPERIMENTAL_CURRENCIES=algorand
+
+# Algorand: development of the tests performed by the bot
+algorand_bot_dev:
+    live:
+        libcore:
+            repository: git@github.com:Ledger-Coin-Integration-team/lib-ledger-core.git
+            branch: int-algorand-libcorev1
+        bindings:
+            repository: git@github.com:Ledger-Coin-Integration-team/lib-ledger-core-node-bindings.git
+            branch: int-algorand
+        live_common:
+            repository: git@github.com:glethuillier/ledger-live-common.git
+            branch: algorand
+        cli_options:
+            - API_ALGORAND_BLOCKCHAIN_EXPLORER_API_ENDPOINT=https://testnet-algorand.api.purestake.io
+            - EXPERIMENTAL_CURRENCIES=algorand
