@@ -57,3 +57,7 @@ remove_sources() {
         then rm -rf ${SOURCE_DIR} ; 
     fi
 }
+
+pause() {
+  read -p "Press enter to continue"
+}
