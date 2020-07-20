@@ -54,7 +54,7 @@ yarn cache clean
 git clean -xdf
 rm -rf node_modules/
 
-yarn
+yarn install
 
 yalc add
 yalc publish
@@ -68,5 +68,8 @@ yarn install
 yarn link
 yarn build
 
-alias ledger-live="${LEDGER_LIVE_OPTIONS} node ${WORKDIR}/ledger-live-common/cli/bin/index.js"
-echo "CLI Options: $LEDGER_LIVE_OPTIONS"
+alias_command="${LEDGER_LIVE_OPTIONS} node ${WORKDIR}/ledger-live-common/cli/bin/index.js"
+
+alias ledger-live="${alias_command}"
+
+echo "alias ledger-live=${alias_command}"

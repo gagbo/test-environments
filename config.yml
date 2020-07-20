@@ -28,7 +28,7 @@ algorand:
             branch: coin/stellar
 
 # Algorand: TestNet
-algorand_testnet:
+algorand_test:
     live:
         libcore:
             repository: git@github.com:Ledger-Coin-Integration-team/lib-ledger-core.git
