@@ -27,7 +27,6 @@ The `setup_live.sh` script:
 
 ```
 $ source ./setup.sh <coin name>
-. . .
 $ ledger-live . . .
 ```
 
@@ -35,11 +34,10 @@ Example:
 
 ```
 $ source ./setup.sh algorand
-. . .
 $ ledger-live sync -c algorand
 ```
 
-### Available coins
+### Coins available for live-common
 
 **Algorand**
 * MainNet: `algorand`
@@ -85,6 +83,11 @@ Example:
 $ ./setup_vault.sh algorand
 ```
 
+### Coins available for the Vault
+
+**Algorand**
+* MainNet: `algorand`
+
 ## Configure a new coin
 
 Edit `config.yml` by adding the configuration details related to the new coin with the following structure:
@@ -122,4 +125,4 @@ Edit `config.yml` by adding the configuration details related to the new coin wi
 
 Note that the `live` (corresponding to live-common) and the `vault` keys are optional; in other words, the configuration can be set for live-common only, the Vault only, or both of them.
 
-When adding a new coin in the configuration file, please edit the current file (`README.md`) in order to also include it in the `Available coins` Section.
+When adding a new coin in the configuration file, please edit the current file (`README.md`) in order to also include it in the `Available coins for (live-common|the Vault)` Section.
