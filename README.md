@@ -26,14 +26,14 @@ The `setup_live.sh` script:
 ### Run
 
 ```
-$ source ./setup.sh <coin name>
+$ source ./setup_live.sh <coin name>
 $ ledger-live . . .
 ```
 
 Example:
 
 ```
-$ source ./setup.sh algorand
+$ source ./setup_live.sh algorand
 $ ledger-live sync -c algorand
 ```
 
