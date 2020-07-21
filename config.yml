@@ -13,8 +13,7 @@ algorand:
         live-desktop:
             repository: # TODO
             branch: #TODO
-        cli_options:
-            - API_ALGORAND_BLOCKCHAIN_EXPLORER_API_ENDPOINT=https://mainnet-algorand.api.purestake.io
+        options:
             - EXPERIMENTAL_CURRENCIES=algorand
     vault:
         libcore:
@@ -45,7 +44,7 @@ algorand_test:
         live-desktop:
             repository: # TODO
             branch: #TODO
-        cli_options:
+        options:
             - API_ALGORAND_BLOCKCHAIN_EXPLORER_API_ENDPOINT=https://testnet-algorand.api.purestake.io
             - EXPERIMENTAL_CURRENCIES=algorand
 
@@ -61,6 +60,6 @@ algorand_bot_dev:
         live_common:
             repository: git@github.com:glethuillier/ledger-live-common.git
             branch: algorand
-        cli_options:
+        options:
             - API_ALGORAND_BLOCKCHAIN_EXPLORER_API_ENDPOINT=https://testnet-algorand.api.purestake.io
             - EXPERIMENTAL_CURRENCIES=algorand

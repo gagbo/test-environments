@@ -104,10 +104,10 @@ Edit `config.yml` by adding the configuration details related to the new coin wi
         live_common:
             repository: <repository uri> 
             branch: <branch name>
-        cli_options:
-            - <optional: CLI option #1>
-            - <optional: CLI option #2>
-            - <optional: CLI option #3 . . .>
+        options:
+            - <optional: option #1>
+            - <optional: option #2>
+            - <optional: option #3 . . .>
     vault:
         libcore:
             repository: <repository uri> 

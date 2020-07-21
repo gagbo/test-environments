@@ -11,7 +11,7 @@ source common.sh
 LIBCORE_BUILD_DIR="libcore_build"
 export LEDGER_CORE_LOCAL_BUILD="${WORKDIR}/${LIBCORE_BUILD_DIR}/core/src"
 
-LEDGER_LIVE_OPTIONS=$( get_value_from_config_file 'cli_options' )
+LEDGER_LIVE_OPTIONS=$( get_value_from_config_file 'options' )
 
 # Prerequisite: node v12
 set_node 12
@@ -51,7 +51,6 @@ retrieve_sources 'live_common'
 cd ${WORKDIR}/ledger-live-common
 
 yarn cache clean
-git clean -xdf
 rm -rf node_modules/
 
 yarn install
@@ -68,8 +67,20 @@ yarn install
 yarn link
 yarn build
 
+# LIVE-DESKTOP
+# (TODO)
+
+# retrieve_sources 'live_desktop'
+
+# cd ${WORKDIR}/ledger-live-common
+
+# yalc add @ledgerhq/ledger-core
+# yalc add @ledgerhq/live-common
+
+# rm -rf node_modules/
+# yarn
+# DEBUG=1 yarn start
+
 alias_command="${LEDGER_LIVE_OPTIONS} node ${WORKDIR}/ledger-live-common/cli/bin/index.js"
-
 alias ledger-live="${alias_command}"
-
 echo `alias ledger-live="${alias_command}"`
