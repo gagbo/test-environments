@@ -72,4 +72,4 @@ alias_command="${LEDGER_LIVE_OPTIONS} node ${WORKDIR}/ledger-live-common/cli/bin
 
 alias ledger-live="${alias_command}"
 
-echo "alias ledger-live=${alias_command}"
+echo `alias ledger-live="${alias_command}"`
