@@ -77,11 +77,15 @@ cd ${WORKDIR}/ledger-live-desktop
 yalc add @ledgerhq/live-common
 yalc add @ledgerhq/ledger-core
 
-sed -i 's/5.19.0/5.19.1/g' package.json
+sed -i -- 's/5.19.0/5.19.1/g' package.json
 
 yarn install
-DEBUG=1 yarn start
 
-alias_command="${LEDGER_LIVE_OPTIONS} node ${WORKDIR}/ledger-live-common/cli/bin/index.js"
-alias ledger-live="${alias_command}"
-echo "alias ledger-live=\"${alias_command}\""
+alias_cli_command="${LEDGER_LIVE_OPTIONS} node ${WORKDIR}/ledger-live-common/cli/bin/index.js"
+alias_desktop_command="cd ${WORKDIR}/ledger-live-desktop && yarn start"
+
+alias ledger-live="${alias_cli_command}"
+alias ledger-desktop="${alias_desktop_command}"
+
+echo "alias ledger-live=\"${alias_cli_command}\""
+echo "alias ledger-desktop=\"${alias_desktop_command}\""
