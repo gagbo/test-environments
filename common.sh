@@ -31,7 +31,7 @@ get_value_from_config_file() {
   SOURCE=$( python3 ${SCRIPT_DIR}/read_config_file.py ${COIN} ${PRODUCT} ${1} ${2} )
   exitcode=$?
   if [ ${exitcode} != 0 ]; then exit ${exitcode}; fi
-  if [ -z "${SOURCE}" ]; then exit 1; fi
+  if [ -z "${SOURCE}" ]; then SOURCE=""; fi
   echo ${SOURCE}
 }
 

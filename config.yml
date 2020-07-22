@@ -10,11 +10,9 @@ algorand:
         live_common:
             repository: git@github.com:Ledger-Coin-Integration-team/ledger-live-common.git
             branch: algorand
-        live-desktop:
-            repository: # TODO
-            branch: #TODO
-        options:
-            - EXPERIMENTAL_CURRENCIES=algorand
+        live_desktop:
+            repository: git@github.com:LFBarreto/ledger-live-desktop.git
+            branch: LL-2719
     vault:
         libcore:
             repository: git@github.com:LedgerHQ/lib-ledger-core.git
@@ -42,11 +40,10 @@ algorand_test:
             repository: git@github.com:Ledger-Coin-Integration-team/ledger-live-common.git
             branch: algorand
         live-desktop:
-            repository: # TODO
-            branch: #TODO
+            repository: git@github.com:LFBarreto/ledger-live-desktop.git
+            branch: LL-2719
         options:
             - API_ALGORAND_BLOCKCHAIN_EXPLORER_API_ENDPOINT=https://testnet-algorand.api.purestake.io
-            - EXPERIMENTAL_CURRENCIES=algorand
 
 # Algorand: development of the tests performed by the bot
 algorand_bot_dev:
@@ -62,4 +59,3 @@ algorand_bot_dev:
             branch: algorand
         options:
             - API_ALGORAND_BLOCKCHAIN_EXPLORER_API_ENDPOINT=https://testnet-algorand.api.purestake.io
-            - EXPERIMENTAL_CURRENCIES=algorand

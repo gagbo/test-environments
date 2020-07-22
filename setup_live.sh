@@ -16,6 +16,9 @@ LEDGER_LIVE_OPTIONS=$( get_value_from_config_file 'options' )
 # Prerequisite: node v12
 set_node 12
 
+# Remove existing db
+rm -rf "${SCRIPT_DIR}/dbdata" 2>/dev/null
+
 # LIBCORE
 retrieve_sources 'libcore'
 git submodule init
@@ -51,7 +54,6 @@ retrieve_sources 'live_common'
 cd ${WORKDIR}/ledger-live-common
 
 yarn cache clean
-rm -rf node_modules/
 
 yarn install
 
@@ -68,18 +70,17 @@ yarn link
 yarn build
 
 # LIVE-DESKTOP
-# (TODO)
+retrieve_sources 'live_desktop'
 
-# retrieve_sources 'live_desktop'
+cd ${WORKDIR}/ledger-live-desktop
 
-# cd ${WORKDIR}/ledger-live-common
+yalc add @ledgerhq/live-common
+yalc add @ledgerhq/ledger-core
 
-# yalc add @ledgerhq/ledger-core
-# yalc add @ledgerhq/live-common
+sed -i 's/5.19.0/5.19.1/g' package.json
 
-# rm -rf node_modules/
-# yarn
-# DEBUG=1 yarn start
+yarn install
+DEBUG=1 yarn start
 
 alias_command="${LEDGER_LIVE_OPTIONS} node ${WORKDIR}/ledger-live-common/cli/bin/index.js"
 alias ledger-live="${alias_command}"

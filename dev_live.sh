@@ -15,7 +15,7 @@ get_value_from_config_file() {
   SOURCE=$( python3 ${SCRIPT_DIR}/read_config_file.py ${COIN} ${PRODUCT} ${1} ${2} )
   exitcode=$?
   if [ ${exitcode} != 0 ]; then exit ${exitcode}; fi
-  if [ -z "${SOURCE}" ]; then exit 1; fi
+  if [ -z "${SOURCE}" ]; then SOURCE=""; fi
   echo ${SOURCE}
 }
 
@@ -28,8 +28,11 @@ cd "${WORKDIR}/ledger-live-common"
 # Files/directories to copy
 cp -vf "${DEV_DIR}/src/families/algorand/specs.js" src/families/algorand/specs.js
 cp -vf "${DEV_DIR}/src/families/algorand/speculos-deviceActions.js" src/families/algorand/speculos-deviceActions.js
+cp -vf "${DEV_DIR}/src/families/algorand/bridge/libcore.js" src/families/algorand/bridge/libcore.js
 
 yalc publish --push
+
+rm -rf "${SCRIPT_DIR}/dbdata"
 
 alias_command="${LEDGER_LIVE_OPTIONS} node cli/bin/index.js"
 
