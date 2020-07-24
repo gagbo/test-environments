@@ -28,20 +28,6 @@ The `setup_live.sh` script:
 #### Option 1: use a locally compiled libcore
 
 ```
-$ source ./setup_live.sh <coin name>
-$ ledger-live . . .
-```
-
-Example:
-
-```
-$ source ./setup_live.sh algorand
-$ ledger-live sync -c algorand
-```
-
-#### Option 2: use a downloaded libcore
-
-```
 $ source ./setup_live.sh <coin name> build
 $ ledger-live . . .
 ```
@@ -50,6 +36,20 @@ Example:
 
 ```
 $ source ./setup_live.sh algorand build
+$ ledger-live sync -c algorand
+```
+
+#### Option 2: use a downloaded libcore
+
+```
+$ source ./setup_live.sh <coin name> 
+$ ledger-live . . .
+```
+
+Example:
+
+```
+$ source ./setup_live.sh algorand
 $ ledger-live sync -c algorand
 ```
 
