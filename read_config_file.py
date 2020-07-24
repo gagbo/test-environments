@@ -48,8 +48,7 @@ else:
         print(source)
 
     except KeyError as e:
-        sys.stderr.write(f"Error: coin {coin} not found\n")
-        exit(1)
+        print() # No options == empty output
     except EmptyVariable:
         sys.stderr.write(f"Error: variable has not been set for {coin} ([{product}] {project}: {key})\n")
         exit(1)

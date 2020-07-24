@@ -2,14 +2,12 @@
 set -e
 
 COIN=${1}
+LIBCORE_MODE=${2}
 PRODUCT='live'
 SCRIPT_DIR="$(pwd)"
 WORKDIR="${SCRIPT_DIR}/.${PRODUCT}_sources"
 
 source common.sh
-
-LIBCORE_BUILD_DIR="libcore_build"
-export LEDGER_CORE_LOCAL_BUILD="${WORKDIR}/${LIBCORE_BUILD_DIR}/core/src"
 
 LEDGER_LIVE_OPTIONS=$( get_value_from_config_file 'options' )
 
@@ -19,31 +17,41 @@ set_node 12
 # Remove existing db
 rm -rf "${SCRIPT_DIR}/dbdata" 2>/dev/null
 
-# LIBCORE
-retrieve_sources 'libcore'
-git submodule init
-git submodule update
+# Ensure that ledger-live is not installed globally
+npm uninstall ledger-live -g
+rm /usr/local/bin/ledger-live || true
 
-mkdir -p ${WORKDIR}/${LIBCORE_BUILD_DIR}
-cd ${WORKDIR}/${LIBCORE_BUILD_DIR}
+# LIBCORE (Build)
+if [ -n "${LIBCORE_MODE}" ] && [ "${LIBCORE_MODE}" == "build" ]; then 
+    LIBCORE_BUILD_DIR="libcore_build"
+    export LEDGER_CORE_LOCAL_BUILD="${WORKDIR}/${LIBCORE_BUILD_DIR}/core/src"
 
-cmake \
-    -DCMAKE_BUILD_TYPE=Release \
-    -DBUILD_TESTS=OFF \
-    -DCMAKE_INSTALL_PREFIX=/usr/local/opt/qt5/ \
-    ${WORKDIR}/lib-ledger-core
+    retrieve_sources 'libcore'
+    git submodule init
+    git submodule update
 
-make -j${N_PROC}
+    mkdir -p ${WORKDIR}/${LIBCORE_BUILD_DIR}
+    cd ${WORKDIR}/${LIBCORE_BUILD_DIR}
+
+    cmake \
+        -DCMAKE_BUILD_TYPE=Release \
+        -DBUILD_TESTS=OFF \
+        -DCMAKE_INSTALL_PREFIX=/usr/local/opt/qt5/ \
+        ${WORKDIR}/lib-ledger-core
+
+    make -j${N_PROC}
+fi
 
 # BINDINGS
 retrieve_sources 'bindings'
 
-cd ${WORKDIR}/lib-ledger-core
-
-./tools/generateBindings.sh ${WORKDIR}/lib-ledger-core-node-bindings ${WORKDIR}/${LIBCORE_BUILD_DIR}
+if [ -n "${LIBCORE_MODE}" ] && [ "${LIBCORE_MODE}" == "build" ]; then 
+    cd ${WORKDIR}/lib-ledger-core
+    ./tools/generateBindings.sh ${WORKDIR}/lib-ledger-core-node-bindings ${WORKDIR}/${LIBCORE_BUILD_DIR}
+fi
 
 cd ${WORKDIR}/lib-ledger-core-node-bindings
-yarn
+yarn install
 
 yalc add
 yalc publish

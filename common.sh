@@ -38,12 +38,23 @@ get_value_from_config_file() {
 retrieve_sources() {
     repository_uri=$( get_value_from_config_file ${1} 'repository' )
     repository_branch=$( get_value_from_config_file ${1} 'branch' )
+    repository_commit=$( get_value_from_config_file ${1} 'commit' )
 
     cd ${WORKDIR}
     dir=$( basename "${repository_uri}" ".${repository_uri##*.}" )
-    git clone -b ${repository_branch} ${repository_uri} -j${N_PROC}
+    echo -e "\nCLONING ${repository_uri}...\n"
+    git clone ${repository_uri} -j${N_PROC}
 
     cd "${WORKDIR}/${dir}"
+
+    if [ -n "${repository_commit}" ]; then
+          echo -e "\nCHECKOUT COMMIT: ${repository_commit}\n"
+          git checkout "${repository_commit}"
+    elif [ -n "${repository_branch}" ]; then
+          echo -e "\nCHECKOUT BRANCH: ${repository_branch}\n"
+          git checkout "${repository_branch}"
+    fi
+  
     SOURCE_DIR=$( echo "${dir}" )
 }
 

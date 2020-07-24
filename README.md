@@ -25,6 +25,8 @@ The `setup_live.sh` script:
 
 ### Run
 
+#### Option 1: use a locally compiled libcore
+
 ```
 $ source ./setup_live.sh <coin name>
 $ ledger-live . . .
@@ -34,6 +36,20 @@ Example:
 
 ```
 $ source ./setup_live.sh algorand
+$ ledger-live sync -c algorand
+```
+
+#### Option 2: use a downloaded libcore
+
+```
+$ source ./setup_live.sh <coin name> build
+$ ledger-live . . .
+```
+
+Example:
+
+```
+$ source ./setup_live.sh algorand build
 $ ledger-live sync -c algorand
 ```
 
@@ -101,6 +117,7 @@ Edit `config.yml` by adding the configuration details related to the new coin wi
         bindings:
             repository: <repository uri> 
             branch: <branch name>
+            <optional: commit: <SHA1>>
         live_common:
             repository: <repository uri> 
             branch: <branch name>
@@ -126,3 +143,24 @@ Edit `config.yml` by adding the configuration details related to the new coin wi
 Note that the `live` (corresponding to live-common) and the `vault` keys are optional; in other words, the configuration can be set for live-common only, the Vault only, or both of them.
 
 When adding a new coin in the configuration file, please edit the current file (`README.md`) in order to also include it in the `Available coins for (live-common|the Vault)` Section.
+
+If a `commit` key-value pair is added, the checkout is done using the corresponding SHA1. Otherwise, the checkout is done using the branch name. 
+
+For instance,
+
+```
+repository: git@github.com:Ledger-Coin-Integration-team/lib-ledger-core-node-bindings.git
+branch: int-algorand
+```
+
+corresponds to a `git checkout int-algorand-libcorev1`.
+
+By contrast,
+
+```
+repository: git@github.com:Ledger-Coin-Integration-team/lib-ledger-core-node-bindings.git
+branch: int-algorand
+commit: 268ac614a77498dd312fb7d576cbd98324cfb49e
+```
+
+corresponds to a `git checkout 268ac614a77498dd312fb7d576cbd98324cfb49e && git reset --hard`.
