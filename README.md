@@ -11,7 +11,7 @@ Scripts to setup reproductible test environments for `live-common` and `Vault`.
 ## Live-common
 
 The `setup_live.sh` script:
-* Compiles `lib-ledger-core` (build type: Release, target: host OS)
+* Downloads or compiles `lib-ledger-core` (build type: Release, target: host OS)
 * Creates the bindings
 * Associates them with `live-common` using yalc
 * Creates an ephemeral `ledger-live` alias configured for testing purposes
