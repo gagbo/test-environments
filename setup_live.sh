@@ -17,6 +17,11 @@ set_node 12
 # Remove existing db
 rm -rf "${SCRIPT_DIR}/dbdata" 2>/dev/null
 
+# Remove cache
+rm -rfv ~/.yalc/{*,.*} || true
+rm -rfv ~/.yarn/{*,.*} || true
+rm -rfv ~/.npm/{*,.*} || true
+
 # Ensure that ledger-live is not installed globally
 npm uninstall ledger-live -g
 rm /usr/local/bin/ledger-live || true
@@ -27,8 +32,7 @@ if [ -n "${LIBCORE_MODE}" ] && [ "${LIBCORE_MODE}" == "build" ]; then
     export LEDGER_CORE_LOCAL_BUILD="${WORKDIR}/${LIBCORE_BUILD_DIR}/core/src"
 
     retrieve_sources 'libcore'
-    git submodule init
-    git submodule update
+    git submodule update --init
 
     mkdir -p ${WORKDIR}/${LIBCORE_BUILD_DIR}
     cd ${WORKDIR}/${LIBCORE_BUILD_DIR}
@@ -36,7 +40,6 @@ if [ -n "${LIBCORE_MODE}" ] && [ "${LIBCORE_MODE}" == "build" ]; then
     cmake \
         -DCMAKE_BUILD_TYPE=Release \
         -DBUILD_TESTS=OFF \
-        -DCMAKE_INSTALL_PREFIX=/usr/local/opt/qt5/ \
         ${WORKDIR}/lib-ledger-core
 
     make -j${N_PROC}
@@ -45,37 +48,40 @@ fi
 # BINDINGS
 retrieve_sources 'bindings'
 
-if [ -n "${LIBCORE_MODE}" ] && [ "${LIBCORE_MODE}" == "build" ]; then 
+if [ -n "${LIBCORE_MODE}" ] && [ "${LIBCORE_MODE}" == "build" ]; then
     cd ${WORKDIR}/lib-ledger-core
     ./tools/generateBindings.sh ${WORKDIR}/lib-ledger-core-node-bindings ${WORKDIR}/${LIBCORE_BUILD_DIR}
 fi
 
 cd ${WORKDIR}/lib-ledger-core-node-bindings
-yarn install
+
+yarn cache clean
+
+yarn install --verbose
 
 yalc add
-yalc publish
+
+yalc publish --push
 
 # LIVE-COMMON
 retrieve_sources 'live_common'
 
 cd ${WORKDIR}/ledger-live-common
 
-yarn cache clean
-
-yarn install
+yarn install --verbose
 
 yalc add
-yalc publish
+
+yalc publish --push
 
 cd ${WORKDIR}/ledger-live-common/cli
 
 yalc add @ledgerhq/ledger-core
 yalc add @ledgerhq/live-common
 
-yarn install
-yarn link
-yarn build
+yarn install --verbose
+yarn link --verbose
+yarn build --verbose
 
 # LIVE-DESKTOP
 retrieve_sources 'live_desktop'

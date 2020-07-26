@@ -4,12 +4,15 @@ algorand:
         libcore:
             repository: git@github.com:Ledger-Coin-Integration-team/lib-ledger-core.git
             branch: int-algorand-libcorev1
+            commit: b07b4de6cc28c4961e0968b245740ccb6fb8d620
         bindings:
             repository: git@github.com:Ledger-Coin-Integration-team/lib-ledger-core-node-bindings.git
             branch: int-algorand
+            commit: 268ac614a77498dd312fb7d576cbd98324cfb49e
         live_common:
             repository: git@github.com:Ledger-Coin-Integration-team/ledger-live-common.git
             branch: algorand
+            commit: 132651dfd6a2ed5021b34da00a3066edca0d4e71
         live_desktop:
             repository: git@github.com:LFBarreto/ledger-live-desktop.git
             branch: LL-2719

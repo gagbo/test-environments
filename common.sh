@@ -49,7 +49,7 @@ retrieve_sources() {
 
     if [ -n "${repository_commit}" ]; then
           echo -e "\nCHECKOUT COMMIT: ${repository_commit}\n"
-          git checkout "${repository_commit}"
+          git reset --hard "${repository_commit}"   
     elif [ -n "${repository_branch}" ]; then
           echo -e "\nCHECKOUT BRANCH: ${repository_branch}\n"
           git checkout "${repository_branch}"
