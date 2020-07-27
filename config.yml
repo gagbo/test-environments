@@ -8,7 +8,7 @@ algorand:
         bindings:
             repository: git@github.com:Ledger-Coin-Integration-team/lib-ledger-core-node-bindings.git
             branch: int-algorand
-            commit: 268ac614a77498dd312fb7d576cbd98324cfb49e
+            commit: f1c37acae02932510c711c23d60ef28d72315464
         live_common:
             repository: git@github.com:Ledger-Coin-Integration-team/ledger-live-common.git
             branch: algorand

@@ -14,20 +14,20 @@ LEDGER_LIVE_OPTIONS=$( get_value_from_config_file 'options' )
 set_node 12 || return
 
 
+# Remove existing db
+rm -rf "${SCRIPT_DIR}/dbdata" 2>/dev/null
+
+# Remove cache
+rm -rfv ~/.yalc/{*,.*} || true
+rm -rfv ~/.yarn/{*,.*} || true
+rm -rfv ~/.npm/{*,.*} || true
+
+# Ensure that ledger-live is not installed globally
+npm uninstall ledger-live -g
+rm /usr/local/bin/ledger-live || true
+
 (
     set -e
-
-    # Remove existing db
-    rm -rf "${SCRIPT_DIR}/dbdata" 2>/dev/null
-
-    # Remove cache
-    rm -rfv ~/.yalc/{*,.*} || true
-    rm -rfv ~/.yarn/{*,.*} || true
-    rm -rfv ~/.npm/{*,.*} || true
-
-    # Ensure that ledger-live is not installed globally
-    npm uninstall ledger-live -g
-    rm /usr/local/bin/ledger-live || true
 
     # LIBCORE
     if [ -n "${LIBCORE_MODE}" ]
@@ -111,8 +111,8 @@ if [ $? -eq 0 ]; then
     alias_cli_command="${LEDGER_LIVE_OPTIONS} node ${WORKDIR}/ledger-live-common/cli/bin/index.js"
     alias_desktop_command="cd ${WORKDIR}/ledger-live-desktop && yarn start"
 
-    alias_cli_command="${LEDGER_LIVE_OPTIONS} node ${WORKDIR}/ledger-live-common/cli/bin/index.js"
-    alias_desktop_command="cd ${WORKDIR}/ledger-live-desktop && yarn start"
+    alias ledger-live="${alias_cli_command}"
+    alias ledger-desktop="${alias_desktop_command}"
 
     echo "alias ledger-live=\"${alias_cli_command}\""
     echo "alias ledger-desktop=\"${alias_desktop_command}\""
