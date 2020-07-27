@@ -1,5 +1,4 @@
 #!/bin/bash
-set -e
 
 COIN=${1}
 LIBCORE_MODE=${2}
@@ -14,90 +13,99 @@ LEDGER_LIVE_OPTIONS=$( get_value_from_config_file 'options' )
 # Prerequisite: node v12
 set_node 12 || return
 
-# Remove existing db
-rm -rf "${SCRIPT_DIR}/dbdata" 2>/dev/null
 
-# Remove cache
-rm -rfv ~/.yalc/{*,.*} || true
-rm -rfv ~/.yarn/{*,.*} || true
-rm -rfv ~/.npm/{*,.*} || true
+(
+    set -e
 
-# Ensure that ledger-live is not installed globally
-npm uninstall ledger-live -g
-rm /usr/local/bin/ledger-live || true
+    # Remove existing db
+    rm -rf "${SCRIPT_DIR}/dbdata" 2>/dev/null
 
-# LIBCORE (Build)
-if [ -n "${LIBCORE_MODE}" ]
-then
-    LIBCORE_BUILD_DIR="libcore_build"
-    export LEDGER_CORE_LOCAL_BUILD="${WORKDIR}/${LIBCORE_BUILD_DIR}/core/src"
+    # Remove cache
+    rm -rfv ~/.yalc/{*,.*} || true
+    rm -rfv ~/.yarn/{*,.*} || true
+    rm -rfv ~/.npm/{*,.*} || true
 
-    mkdir -p "${WORKDIR}/${LIBCORE_BUILD_DIR}"
+    # Ensure that ledger-live is not installed globally
+    npm uninstall ledger-live -g
+    rm /usr/local/bin/ledger-live || true
 
-    if [ "${LIBCORE_MODE}" == "build" ]
+    # LIBCORE
+    if [ -n "${LIBCORE_MODE}" ]
     then
-        retrieve_sources 'libcore'
-        git submodule update --init
+        LIBCORE_BUILD_DIR="libcore_build"
+        export LEDGER_CORE_LOCAL_BUILD="${WORKDIR}/${LIBCORE_BUILD_DIR}/core/src"
 
-        cd "${WORKDIR}/${LIBCORE_BUILD_DIR}"
+        mkdir -p "${WORKDIR}/${LIBCORE_BUILD_DIR}"
 
-        cmake \
-            -DCMAKE_BUILD_TYPE=Release \
-            -DBUILD_TESTS=OFF \
-            "${WORKDIR}/lib-ledger-core"
+        # Build
+        if [ "${LIBCORE_MODE}" == "build" ]
+        then
+            retrieve_sources 'libcore'
+            git submodule update --init
 
-        make -j${N_PROC}
-    elif [ "${LIBCORE_MODE}" == "file" ]
-    then
-        FILE_PATH=${3}
+            cd "${WORKDIR}/${LIBCORE_BUILD_DIR}"
 
-        mkdir -p "${WORKDIR}/${LIBCORE_BUILD_DIR}/core/src"
-        cp -fv "${FILE_PATH}" "${WORKDIR}/${LIBCORE_BUILD_DIR}/core/src"
+            cmake \
+                -DCMAKE_BUILD_TYPE=Release \
+                -DBUILD_TESTS=OFF \
+                "${WORKDIR}/lib-ledger-core"
+
+            make -j${N_PROC}
+        
+        # Use local file
+        elif [ "${LIBCORE_MODE}" == "file" ]
+        then
+            FILE_PATH=${3}
+
+            mkdir -p "${WORKDIR}/${LIBCORE_BUILD_DIR}/core/src"
+            cp -fv "${FILE_PATH}" "${WORKDIR}/${LIBCORE_BUILD_DIR}/core/src"
+        fi
     fi
-fi
 
-# BINDINGS
-retrieve_sources 'bindings'
+    # BINDINGS
+    retrieve_sources 'bindings'
 
-if [ -n "${LIBCORE_MODE}" ] && [ "${LIBCORE_MODE}" == "build" ]; then
-    cd ${WORKDIR}/lib-ledger-core
-    ./tools/generateBindings.sh ${WORKDIR}/lib-ledger-core-node-bindings ${WORKDIR}/${LIBCORE_BUILD_DIR}
-fi
+    if [ -n "${LIBCORE_MODE}" ] && [ "${LIBCORE_MODE}" == "build" ]; then
+        cd ${WORKDIR}/lib-ledger-core
+        ./tools/generateBindings.sh ${WORKDIR}/lib-ledger-core-node-bindings ${WORKDIR}/${LIBCORE_BUILD_DIR}
+    fi
 
-cd ${WORKDIR}/lib-ledger-core-node-bindings
+    cd ${WORKDIR}/lib-ledger-core-node-bindings
 
-yarn install --verbose
+    yarn install --verbose
 
-yalc publish --push
+    yalc publish --push
 
-# LIVE-COMMON
-retrieve_sources 'live_common'
+    # LIVE-COMMON
+    retrieve_sources 'live_common'
 
-cd ${WORKDIR}/ledger-live-common
+    cd ${WORKDIR}/ledger-live-common
 
-yarn install --verbose
+    yarn install --verbose
 
-yalc publish --push
+    yalc publish --push
 
-cd ${WORKDIR}/ledger-live-common/cli
+    cd ${WORKDIR}/ledger-live-common/cli
 
-yalc add @ledgerhq/ledger-core
-yalc add @ledgerhq/live-common
+    yalc add @ledgerhq/ledger-core
+    yalc add @ledgerhq/live-common
 
-yarn install --verbose
-yarn build --verbose
+    yarn install --verbose
+    yarn build --verbose
 
-# LIVE-DESKTOP
-retrieve_sources 'live_desktop'
+    # LIVE-DESKTOP
+    retrieve_sources 'live_desktop'
 
-cd ${WORKDIR}/ledger-live-desktop
+    cd ${WORKDIR}/ledger-live-desktop
 
-yalc add @ledgerhq/live-common
-yalc add @ledgerhq/ledger-core
+    yalc add @ledgerhq/live-common
+    yalc add @ledgerhq/ledger-core
 
-sed -i -- 's/5.19.0/5.19.1/g' package.json
+    sed -i -- 's/5.19.0/5.19.1/g' package.json
 
-yarn install
+    yarn install
+)
+
 
 if [ $? -eq 0 ]; then
     alias_cli_command="${LEDGER_LIVE_OPTIONS} node ${WORKDIR}/ledger-live-common/cli/bin/index.js"
