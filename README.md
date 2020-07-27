@@ -7,6 +7,7 @@ Scripts to setup reproductible test environments for `live-common` and `Vault`.
 * OS: Linux or macOS
 * Nvm (https://github.com/nvm-sh/nvm)
 * Python 3 (https://www.python.org/downloads/)
+* Yarn
 
 ## Live-common
 
@@ -21,11 +22,12 @@ The `setup_live.sh` script:
 * Node 12 (Linux: `nvm install 12`; macOS: `nvm install 12 64`)
 * `PyYAML` Python package (https://pypi.org/project/PyYAML/)
 * yalc (https://www.npmjs.com/package/yalc)
+* sbt (https://www.scala-sbt.org/)
 * a C++ compiler (g++, clang++, ...)
 
 ### Run
 
-#### Option 1: use a locally compiled libcore
+#### Option 1: Compile libcore
 
 ```
 $ source ./setup_live.sh <coin name> build
@@ -39,7 +41,7 @@ $ source ./setup_live.sh algorand build
 $ ledger-live sync -c algorand
 ```
 
-#### Option 2: use a downloaded libcore
+#### Option 2: Download libcore
 
 ```
 $ source ./setup_live.sh <coin name> 
@@ -50,6 +52,20 @@ Example:
 
 ```
 $ source ./setup_live.sh algorand
+$ ledger-live sync -c algorand
+```
+
+#### Option 3: Provide a compiled libcore
+
+```
+$ source ./setup_live.sh <coin name> file <path to compiled libcore library>
+$ ledger-live . . .
+```
+
+Example:
+
+```
+$ source ./setup_live.sh algorand file /tmp/libledger-core.dylib
 $ ledger-live sync -c algorand
 ```
 

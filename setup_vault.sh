@@ -29,13 +29,13 @@ remove_image() {
 
 check_image() {
     if [[ $( docker image ls | grep ${1} ) != *"${1}"* ]]; then
-        echo "${1} image not found" && exit 1
+        echo "${1} image not found" && return 1
     fi
 }
 
 check_container() {
     if [[ $( docker ps | grep ${1} ) != *"${1}"* ]]; then
-        echo "${1} container not found" && exit 1
+        echo "${1} container not found" && return 1
     fi
 }
 

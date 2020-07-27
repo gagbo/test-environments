@@ -1,5 +1,14 @@
-if [ -z "${COIN}" ]; 
-  then echo "Please provide a coin as argument" && exit 1; 
+# Ensure that a coin is provided
+if [ -z "${COIN}" ]
+  then echo "Please provide a coin as argument" && return 1
+fi
+
+# Ensure that a path is provided when using option "file"
+if [ -n "${2}" ] && [ "${2}" == "file" ]
+  then
+    if [ -z "${3}" ]
+      then echo "Please provide a path to the local compiled libcore" && return 1
+    fi
 fi
 
 N_PROC=$(grep -c ^processor /proc/cpuinfo 2>/dev/null || sysctl -n hw.ncpu || echo 1)
@@ -23,14 +32,14 @@ cd ${WORKDIR}
 set_node() {
     nvm use ${1}
     if [[ $( node --version | grep "v${1}" ) != *"v${1}"* ]]; then
-        echo "Node version expected to be ${1}" && exit 1
+        echo "Node version expected to be ${1}" && return 1;
     fi
 }
 
 get_value_from_config_file() {
   SOURCE=$( python3 ${SCRIPT_DIR}/read_config_file.py ${COIN} ${PRODUCT} ${1} ${2} )
   exitcode=$?
-  if [ ${exitcode} != 0 ]; then exit ${exitcode}; fi
+  if [ ${exitcode} != 0 ]; then return ${exitcode}; fi
   if [ -z "${SOURCE}" ]; then SOURCE=""; fi
   echo ${SOURCE}
 }
