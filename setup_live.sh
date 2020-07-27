@@ -20,7 +20,7 @@ rm -rf "${SCRIPT_DIR}/dbdata" 2>/dev/null
 # Remove cache
 rm -rfv ~/.yalc/{*,.*} || true
 rm -rfv ~/.yarn/{*,.*} || true
-rm -rfv ~/.npm/{*,.*} || true
+rm -rfv ~/.npm/{*,.*}  || true
 
 # Ensure that ledger-live is not installed globally
 npm uninstall ledger-live -g
@@ -98,9 +98,14 @@ rm /usr/local/bin/ledger-live || true
 
     cd ${WORKDIR}/ledger-live-desktop
 
+    # Add coin to list of supported currencies
+    sed -i -- "s/setSupportedCurrencies(\[/setSupportedCurrencies(\[\"${COIN}\",/g" \
+        src/live-common-set-supported-currencies.js
+
     yalc add @ledgerhq/live-common
     yalc add @ledgerhq/ledger-core
 
+    # TEMPORARY (for Algorand)
     sed -i -- 's/5.19.0/5.19.1/g' package.json
 
     yarn install
