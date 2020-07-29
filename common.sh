@@ -81,3 +81,10 @@ remove_sources() {
 pause() {
   read -p "Press enter to continue"
 }
+
+# Export variables from .env file
+if test -f ".env"; then
+  set -a
+  source .env
+  set +a
+fi

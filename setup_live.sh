@@ -13,9 +13,8 @@ LEDGER_LIVE_OPTIONS=$( get_value_from_config_file 'options' )
 # Prerequisite: node v12
 set_node 12 || return
 
-
 # Remove existing db
-rm -rf "${SCRIPT_DIR}/dbdata" 2>/dev/null
+rm -rf "${SCRIPT_DIR}/dbdata" || true
 
 # Remove cache
 rm -rfv ~/.yalc/{*,.*} || true

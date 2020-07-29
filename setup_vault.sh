@@ -8,13 +8,6 @@ WORKDIR="${SCRIPT_DIR}/.${PRODUCT}_sources"
 
 source common.sh
 
-# Export variables from .env file
-if test -f ".env"; then
-  set -a
-  source .env
-  set +a
-fi
-
 # Salt ##############################
 SALT="test"
 
