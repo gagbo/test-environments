@@ -20,8 +20,8 @@ SALT="test"
 
 # Environment variables #############
 export VAULT_API_VERSION=coin_stellar
+export VAULT_PROFILE=front
 export WALLET_DAEMON_VERSION=custom
-
 
 remove_image() {
     docker rmi $( docker images ls | grep ${1} ) --force || true
@@ -75,7 +75,7 @@ cd ..
 
 # Build custom wallet-daemon image
 remove_image "ledger-wallet-daemon"
-docker build -t ledgerhq/ledger-wallet-daemon:custom .
+docker build -t ledgerhq/ledger-wallet-daemon:${WALLET_DAEMON_VERSION} .
 check_image "ledger-wallet-daemon"
 
 remove_sources
@@ -84,14 +84,15 @@ remove_sources
 # VAULT INTEGRATION
 retrieve_sources 'vault_integration'
 
-./vault_compose gen front
+python3 -m venv .venv
 
-docker-compose up --build -d
+source .venv/bin/activate
 
-check_container "ledger-wallet-daemon"
+pip3 install -r requirements.txt
+
+inv flush setup.qa up -d
 
 remove_sources
-
 
 # VAULT FRONT
 retrieve_sources 'vault_front'
