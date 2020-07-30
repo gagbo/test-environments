@@ -83,8 +83,6 @@ pause() {
 }
 
 # Export variables from .env file
-if test -f ".env"; then
-  set -a
-  source .env
-  set +a
-fi
+set -o allexport
+source "${SCRIPT_DIR}/.env"
+set +o allexport

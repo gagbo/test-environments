@@ -23,7 +23,7 @@ RUN apt-get update -qqy \
     && apt-get install -qqy \
         build-essential=12.3 \
         apt-transport-https=1.4.10 \
-        curl=7.52.1-5+deb9u10 \
+        curl \
         git=1:2.11.0-3+deb9u7 \
         ssh=1:7.4p1-10+deb9u7 \
         libssl-dev=1.1.0l-1~deb9u1 \
@@ -119,7 +119,7 @@ RUN mkdir -p ${LIB_CORE_BUILD_DIR} ${LIB_CORE_JAR_BUILD_DIR}
 RUN apt-get update -qqy \
     && apt-get install -qqy \
         apt-transport-https=1.4.10 \
-        curl=7.52.1-5+deb9u10 \
+        curl \
         openjdk-8-jdk=8u252-b09-1~deb9u1 \
     && rm -rf /var/lib/apt/lists/* 
 

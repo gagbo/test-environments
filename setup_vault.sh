@@ -12,7 +12,6 @@ source common.sh
 SALT="test"
 
 # Environment variables #############
-export VAULT_API_VERSION=coin_stellar
 export VAULT_PROFILE=front
 export WALLET_DAEMON_VERSION=custom
 

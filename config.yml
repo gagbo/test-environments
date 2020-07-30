@@ -63,3 +63,19 @@ stellar:
         vault_front:
             repository: git@github.com:LedgerHQ/ledger-vault-front.git
             branch: coin/stellar
+
+
+tezos:
+    vault:
+        libcore:
+            repository: git@github.com:LedgerHQ/lib-ledger-core.git
+            branch: master
+        wallet_daemon:
+            repository: git@github.com:LedgerHQ/ledger-wallet-daemon.git
+            branch: coin/tezos
+        vault_integration:
+            repository: git@github.com:noirbizarre/vault-integration.git
+            branch: all-in-one
+        vault_front:
+            repository: git@github.com:LedgerHQ/ledger-vault-front.git
+            branch: coin/tezos
