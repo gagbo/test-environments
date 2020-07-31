@@ -93,12 +93,8 @@ yarn cache clean
 git clean -xdf
 rm -rf node_modules/
 
-# yarn global add @ledgerhq/vault-cli
-
 yarn
 
 hsmaas init --clean --compartment-id ${VAULT_COMPARTMENT_ID}
 
 yarn dev &
-
-#ledger-vault run onboarding --salt ${SALT}

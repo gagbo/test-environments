@@ -64,7 +64,6 @@ stellar:
             repository: git@github.com:LedgerHQ/ledger-vault-front.git
             branch: coin/stellar
 
-
 tezos:
     vault:
         libcore:
