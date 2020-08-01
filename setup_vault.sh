@@ -8,10 +8,6 @@ WORKDIR="${SCRIPT_DIR}/.${PRODUCT}_sources"
 
 source common.sh
 
-# Salt ##############################
-SALT="test"
-
-# Environment variables #############
 export VAULT_PROFILE=front
 export WALLET_DAEMON_VERSION=custom
 
@@ -37,6 +33,7 @@ set_node 10
 # Stop containers that are currently running
 docker stop $(docker ps -a -q) || true
 
+
 # LIBCORE
 retrieve_sources 'libcore'
 
@@ -50,8 +47,6 @@ remove_image "libcore"
 docker build -t libcore --build-arg BUILD_TYPE=Release -f tools/builder/Dockerfile .
 check_image "libcore"
 
-remove_sources
-
 
 # WALLET DAEMON
 retrieve_sources 'wallet_daemon'
@@ -61,7 +56,6 @@ cd lib
 rm *
 docker run -v $(pwd):/build libcore
 stat ledger-lib-core.jar # (assert that JAR file has been retrieved)
-remove_image "libcore" # (libcore image is useless at this stage)
 
 cd ..
 
@@ -69,8 +63,6 @@ cd ..
 remove_image "ledger-wallet-daemon"
 docker build -t ledgerhq/ledger-wallet-daemon:${WALLET_DAEMON_VERSION} .
 check_image "ledger-wallet-daemon"
-
-remove_sources
 
 
 # VAULT INTEGRATION
@@ -84,7 +76,6 @@ pip3 install -r requirements.txt
 
 inv flush setup.qa up -d
 
-remove_sources
 
 # VAULT FRONT
 retrieve_sources 'vault_front'
@@ -94,7 +85,5 @@ git clean -xdf
 rm -rf node_modules/
 
 yarn
-
-hsmaas init --clean --compartment-id ${VAULT_COMPARTMENT_ID}
 
 yarn dev &

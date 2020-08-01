@@ -86,3 +86,6 @@ pause() {
 set -o allexport
 source "${SCRIPT_DIR}/.env"
 set +o allexport
+
+# Remove existing db
+rm -rf "${SCRIPT_DIR}/dbdata" || true
