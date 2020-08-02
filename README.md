@@ -7,6 +7,7 @@ Scripts to setup reproductible test environments for `live-common` and `Vault`.
 * OS: Linux or macOS
 * Nvm (https://github.com/nvm-sh/nvm)
 * Python 3 (https://www.python.org/downloads/)
+* `PyYAML` Python package (https://pypi.org/project/PyYAML/)
 * Yarn
 
 ## Live-common
@@ -20,7 +21,6 @@ The `setup_live.sh` script:
 ### Prerequisites
 
 * Node 12 (Linux: `nvm install 12`; macOS: `nvm install 12 64`)
-* `PyYAML` Python package (https://pypi.org/project/PyYAML/)
 * yalc (https://www.npmjs.com/package/yalc)
 * sbt (https://www.scala-sbt.org/)
 * a C++ compiler (g++, clang++, ...)
@@ -95,6 +95,8 @@ The `setup_vault.sh` script:
 * Docker
 * Docker Compose
 * Node 10 (Linux: `nvm install 10`; macOS: `nvm install 10 64`)
+* Python3-dev
+* hsmaas (https://github.com/LedgerHQ/python-hsmaas#installation-localy)
 * Default Vault environment variables (set and sourced, or set in `.env` file)
 * `click` Python package (https://pypi.org/project/click/) (for `vault-integration`, `./vault_compose` command)
 * Being logged in to Docker Hub from account belonging to `ledgerhq` organization
