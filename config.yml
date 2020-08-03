@@ -10,7 +10,7 @@ algorand:
             #commit: f1c37acae02932510c711c23d60ef28d72315464
         live_common:
             repository: git@github.com:Ledger-Coin-Integration-team/ledger-live-common.git
-            branch: algorand
+            branch: algorand-rebase
         live_desktop:
             repository: git@github.com:LFBarreto/ledger-live-desktop.git
             branch: LL-2719
