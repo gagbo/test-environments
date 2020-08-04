@@ -29,6 +29,7 @@ cd "${WORKDIR}/ledger-live-common"
 cp -vf "${DEV_DIR}/src/families/algorand/specs.js" src/families/algorand/specs.js
 cp -vf "${DEV_DIR}/src/families/algorand/speculos-deviceActions.js" src/families/algorand/speculos-deviceActions.js
 cp -vf "${DEV_DIR}/src/families/algorand/bridge/libcore.js" src/families/algorand/bridge/libcore.js
+cp -vf "${DEV_DIR}/src/env.js" src/env.js
 
 yalc publish --push
 
