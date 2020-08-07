@@ -2,12 +2,11 @@
 algorand:
     live:
         libcore:
-            repository: git@github.com:Ledger-Coin-Integration-team/lib-ledger-core.git
-            branch: int-algorand-libcorev1
+            repository: git@github.com:LedgerHQ/lib-ledger-core.git
+            branch: master
         bindings:
-            repository: git@github.com:Ledger-Coin-Integration-team/lib-ledger-core-node-bindings.git
-            branch: int-algorand
-            #commit: f1c37acae02932510c711c23d60ef28d72315464
+            repository: git@github.com:LedgerHQ/lib-ledger-core-node-bindings.git
+            branch: master
         live_common:
             repository: git@github.com:Ledger-Coin-Integration-team/ledger-live-common.git
             branch: algorand-rebase
