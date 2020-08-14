@@ -102,8 +102,8 @@ rm /usr/local/bin/ledger-live || true
     yalc add @ledgerhq/ledger-core
 
     # TEMPORARY (for Algorand)
-    sed -i -- 's/5.19.0/5.21.0/g' package.json
-    sed -i -- 's/5.19.1/5.21.0/g' package.json
+    sed -i -- 's/5.19.0/5.22.0/g' package.json
+    sed -i -- 's/5.19.1/5.22.0/g' package.json
 
     yarn install
 )

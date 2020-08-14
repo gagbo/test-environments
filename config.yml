@@ -8,8 +8,8 @@ algorand:
             repository: git@github.com:LedgerHQ/lib-ledger-core-node-bindings.git
             branch: master
         live_common:
-            repository: git@github.com:Ledger-Coin-Integration-team/ledger-live-common.git
-            branch: algorand-rebase
+            repository: git@github.com:LedgerHQ/ledger-live-common.git
+            branch: master
         live_desktop:
             repository: git@github.com:LFBarreto/ledger-live-desktop.git
             branch: LL-2719
