@@ -1,10 +1,11 @@
+
 # Ensure that a coin is provided
 if [ -z "${COIN}" ]
   then echo "Please provide a coin as argument" && return 1
 fi
 
 # Ensure that a path is provided when using option "file"
-if [ -n "${2}" ] && [ "${2}" == "file" ]
+if [ -n "${2}" ] && [ "${2}" = "file" ]
   then
     if [ -z "${3}" ]
       then echo "Please provide a path to the local compiled libcore" && return 1

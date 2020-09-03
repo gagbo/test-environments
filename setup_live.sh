@@ -1,5 +1,17 @@
 #!/bin/bash
 
+# Remove cache
+read -p "The contents of ~/.yalc, ~/.yarn, and ~/.npm are about to be deleted. Do you want to continue? " -n 1 -r
+echo    # (optional) move to a new line
+if [[ ! $REPLY =~ ^[Yy]$ ]]
+then
+    exit 1
+fi
+
+rm -rfv ~/.yalc/{*,.*} || true
+rm -rfv ~/.yarn/{*,.*} || true
+rm -rfv ~/.npm/{*,.*}  || true
+
 COIN=${1}
 LIBCORE_MODE=${2}
 PRODUCT='live'
@@ -12,11 +24,6 @@ LEDGER_LIVE_OPTIONS=$( get_value_from_config_file 'options' )
 
 # Prerequisite: node v12
 set_node 12 || return
-
-# Remove cache
-rm -rfv ~/.yalc/{*,.*} || true
-rm -rfv ~/.yarn/{*,.*} || true
-rm -rfv ~/.npm/{*,.*}  || true
 
 # Ensure that ledger-live is not installed globally
 npm uninstall ledger-live -g
@@ -34,7 +41,7 @@ rm /usr/local/bin/ledger-live || true
         mkdir -p "${WORKDIR}/${LIBCORE_BUILD_DIR}"
 
         # Build
-        if [ "${LIBCORE_MODE}" == "build" ]
+        if [ "${LIBCORE_MODE}" = "build" ]
         then
             retrieve_sources 'libcore'
             git submodule update --init
@@ -49,7 +56,7 @@ rm /usr/local/bin/ledger-live || true
             make -j${N_PROC}
         
         # Use local file
-        elif [ "${LIBCORE_MODE}" == "file" ]
+        elif [ "${LIBCORE_MODE}" = "file" ]
         then
             FILE_PATH=${3}
 
@@ -61,7 +68,7 @@ rm /usr/local/bin/ledger-live || true
     # BINDINGS
     retrieve_sources 'bindings'
 
-    if [ -n "${LIBCORE_MODE}" ] && [ "${LIBCORE_MODE}" == "build" ]; then
+    if [ -n "${LIBCORE_MODE}" ] && [ "${LIBCORE_MODE}" = "build" ]; then
         cd ${WORKDIR}/lib-ledger-core
         ./tools/generateBindings.sh ${WORKDIR}/lib-ledger-core-node-bindings ${WORKDIR}/${LIBCORE_BUILD_DIR}
     fi
@@ -89,14 +96,16 @@ rm /usr/local/bin/ledger-live || true
     yarn install --verbose
     yarn build --verbose
 
+    npm rebuild
+
     # LIVE-DESKTOP
     retrieve_sources 'live_desktop'
 
     cd ${WORKDIR}/ledger-live-desktop
 
     # Add coin to list of supported currencies
-    sed -i -- "s/setSupportedCurrencies(\[/setSupportedCurrencies(\[\"${COIN}\",/g" \
-        src/live-common-set-supported-currencies.js
+    #sed -i -- "s/setSupportedCurrencies(\[/setSupportedCurrencies(\[\"${COIN}\",/g" \
+    #    src/live-common-set-supported-currencies.js
 
     yalc add @ledgerhq/live-common
     yalc add @ledgerhq/ledger-core
@@ -116,6 +125,7 @@ if [ $? -eq 0 ]; then
     alias ledger-live="${alias_cli_command}"
     alias ledger-desktop="${alias_desktop_command}"
 
+    echo "Please copy/paste the following aliases:"
     echo "alias ledger-live=\"${alias_cli_command}\""
     echo "alias ledger-desktop=\"${alias_desktop_command}\""
 fi
