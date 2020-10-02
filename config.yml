@@ -77,3 +77,16 @@ tezos:
         vault_front:
             repository: git@github.com:LedgerHQ/ledger-vault-front.git
             branch: coin/tezos
+    live:
+        libcore:
+            repository: git@github.com:noirbizarre/lib-ledger-core.git
+            branch: wip/tezos
+        bindings:
+            repository: git@github.com:Ledger-Coin-Integration-team/lib-ledger-core-node-bindings.git
+            branch: master
+        live_common:
+            repository: git@github.com:Ledger-Coin-Integration-team/ledger-live-common.git
+            branch: master
+        live_desktop:
+            repository: git@github.com:LedgerHQ/ledger-live-desktop.git
+            branch: master
