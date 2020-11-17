@@ -90,3 +90,13 @@ tezos:
         live_desktop:
             repository: git@github.com:LedgerHQ/ledger-live-desktop.git
             branch: master
+
+polkadot:
+    live:
+        live_common:
+            repository: git@github.com:Ledger-Coin-Integration-team/ledger-live-common.git
+            branch: polkadot
+        live_desktop:
+            repository: git@github.com:Ledger-Coin-Integration-team/ledger-live-desktop.git
+            branch: polkadot
+            options: API_POLKADOT_NODE=wss://rpc.polkadot.io/

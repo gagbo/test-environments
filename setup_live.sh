@@ -66,18 +66,18 @@ rm /usr/local/bin/ledger-live || true
     fi
 
     # BINDINGS
-    retrieve_sources 'bindings'
+    #retrieve_sources 'bindings'
 
-    if [ -n "${LIBCORE_MODE}" ] && [ "${LIBCORE_MODE}" = "build" ]; then
-        cd ${WORKDIR}/lib-ledger-core
-        ./tools/generateBindings.sh ${WORKDIR}/lib-ledger-core-node-bindings ${WORKDIR}/${LIBCORE_BUILD_DIR}
-    fi
+    #if [ -n "${LIBCORE_MODE}" ] && [ "${LIBCORE_MODE}" = "build" ]; then
+    #    cd ${WORKDIR}/lib-ledger-core
+    #    ./tools/generateBindings.sh ${WORKDIR}/lib-ledger-core-node-bindings ${WORKDIR}/${LIBCORE_BUILD_DIR}
+    #fi
 
-    cd ${WORKDIR}/lib-ledger-core-node-bindings
+    #cd ${WORKDIR}/lib-ledger-core-node-bindings
 
-    yarn install
+    #yarn install
 
-    yalc publish --push
+    #yalc publish --push
 
     # LIVE-COMMON
     retrieve_sources 'live_common'
@@ -90,7 +90,7 @@ rm /usr/local/bin/ledger-live || true
 
     cd ${WORKDIR}/ledger-live-common/cli
 
-    yalc add @ledgerhq/ledger-core
+    #yalc add @ledgerhq/ledger-core
     yalc add @ledgerhq/live-common
 
     yarn install
@@ -99,28 +99,28 @@ rm /usr/local/bin/ledger-live || true
     npm rebuild
 
     # LIVE-DESKTOP
-    retrieve_sources 'live_desktop'
+    # retrieve_sources 'live_desktop'
 
-    cd ${WORKDIR}/ledger-live-desktop
+    # cd ${WORKDIR}/ledger-live-desktop
 
     # Add coin to list of supported currencies
     #sed -i -- "s/setSupportedCurrencies(\[/setSupportedCurrencies(\[\"${COIN}\",/g" \
     #    src/live-common-set-supported-currencies.js
 
-    yalc add @ledgerhq/live-common
-    yalc add @ledgerhq/ledger-core
+    # yalc add @ledgerhq/live-common
+    #yalc add @ledgerhq/ledger-core
 
-    # TEMPORARY (for Algorand)
-    #sed -i -- 's/5.19.0/5.22.0/g' package.json
+    # Ensure versions are matching
+    # sed -i -- 's/5.26.0/5.28.0/g' package.json
     #sed -i -- 's/5.19.1/5.22.0/g' package.json
 
-    yarn install
+    # yarn install
 )
 
 
 if [ $? -eq 0 ]; then
     alias_cli_command="${LEDGER_LIVE_OPTIONS} node ${WORKDIR}/ledger-live-common/cli/bin/index.js"
-    alias_desktop_command="cd ${WORKDIR}/ledger-live-desktop && yarn start"
+    alias_desktop_command="${LEDGER_LIVE_OPTIONS} cd ${WORKDIR}/ledger-live-desktop && yarn start"
 
     alias ledger-live="${alias_cli_command}"
     alias ledger-desktop="${alias_desktop_command}"

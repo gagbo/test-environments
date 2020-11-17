@@ -9,7 +9,7 @@ WORKDIR="${SCRIPT_DIR}/.${PRODUCT}_sources"
 source common.sh
 
 export VAULT_PROFILE=front
-export WALLET_DAEMON_VERSION=custom
+#export WALLET_DAEMON_VERSION=custom
 
 remove_image() {
     docker rmi $( docker images ls | grep ${1} ) --force || true
@@ -35,34 +35,34 @@ docker stop $(docker ps -a -q) || true
 
 
 # LIBCORE
-retrieve_sources 'libcore'
+#retrieve_sources 'libcore'
 
 # Temporary: to remove when the corresponding Dockerfile is merged into libcore
 #   context: https://github.com/Ledger-Coin-Integration-team/lib-ledger-core/pull/60
-mkdir -p tools/builder
-cp -v ../../Dockerfile tools/builder/Dockerfile
+#mkdir -p tools/builder
+#cp -v ../../Dockerfile tools/builder/Dockerfile
 
 # Compile and encapsulate in JAR file
-remove_image "libcore"
-docker build -t libcore --build-arg BUILD_TYPE=Release -f tools/builder/Dockerfile .
-check_image "libcore"
+#remove_image "libcore"
+#docker build -t libcore --build-arg BUILD_TYPE=Release -f tools/builder/Dockerfile .
+#check_image "libcore"
 
 
 # WALLET DAEMON
-retrieve_sources 'wallet_daemon'
+#retrieve_sources 'wallet_daemon'
 
 # Put newly generated .jar in lib subdirectory
-cd lib
-rm *
-docker run -v $(pwd):/build libcore
-stat ledger-lib-core.jar # (assert that JAR file has been retrieved)
+#cd lib
+#rm *
+#docker run -v $(pwd):/build libcore
+#stat ledger-lib-core.jar # (assert that JAR file has been retrieved)
 
-cd ..
+#cd ..
 
 # Build custom wallet-daemon image
-remove_image "ledger-wallet-daemon"
-docker build -t ledgerhq/ledger-wallet-daemon:${WALLET_DAEMON_VERSION} .
-check_image "ledger-wallet-daemon"
+#remove_image "ledger-wallet-daemon"
+#docker build -t ledgerhq/ledger-wallet-daemon:${WALLET_DAEMON_VERSION} .
+#check_image "ledger-wallet-daemon"
 
 
 # VAULT INTEGRATION
