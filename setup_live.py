@@ -32,16 +32,18 @@ print(get_product_configuration(coin, 'live'))
 def clear_cache():
     os = platform.system()
     home = str(Path.home())
-
+ 
     if os == 'Darwin':
-        cache_folders = [home + '/.yalc', home + '/.yarn', home + '/.npm']
+        cache_folders = ['/.yalc', '/.yarn', '/.npm']
+    elif os == 'Windows':
+        cache_folders = ['\AppData\Local\Yalc', '\AppData\Local\Yarn\cache', '\AppData\Roaming\npm-cache']
 
     data = input("Do you want to clear the cache?\n(" + ', '.join(cache_folders) + ' will be removed)\nyN\n')
     if data.lower() != 'y':
         return
 
     for cache in cache_folders:
-        shutil.rmtree(cache, ignore_errors=True)
+        shutil.rmtree(home + cache, ignore_errors=True)
 
 
 clear_cache()
