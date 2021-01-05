@@ -99,4 +99,6 @@ polkadot:
         live_desktop:
             repository: git@github.com:Ledger-Coin-Integration-team/ledger-live-desktop.git
             branch: polkadot
-            options: API_POLKADOT_NODE=wss://rpc.polkadot.io/
+        live_mobile:
+            repository: git@github.com:Ledger-Coin-Integration-team/ledger-live-mobile.git
+            branch: polkadot

@@ -63,6 +63,8 @@ rm /usr/local/bin/ledger-live || true
             mkdir -p "${WORKDIR}/${LIBCORE_BUILD_DIR}/core/src"
             cp -fv "${FILE_PATH}" "${WORKDIR}/${LIBCORE_BUILD_DIR}/core/src"
         fi
+    else
+        echo "Libcore build skipped"
     fi
 
     # BINDINGS
@@ -88,6 +90,7 @@ rm /usr/local/bin/ledger-live || true
 
     yalc publish --push
 
+    # LIVE-COMMON: CLI
     cd ${WORKDIR}/ledger-live-common/cli
 
     #yalc add @ledgerhq/ledger-core
@@ -99,22 +102,22 @@ rm /usr/local/bin/ledger-live || true
     npm rebuild
 
     # LIVE-DESKTOP
-    # retrieve_sources 'live_desktop'
+    retrieve_sources 'live_desktop'
 
-    # cd ${WORKDIR}/ledger-live-desktop
+    cd ${WORKDIR}/ledger-live-desktop
 
     # Add coin to list of supported currencies
     #sed -i -- "s/setSupportedCurrencies(\[/setSupportedCurrencies(\[\"${COIN}\",/g" \
     #    src/live-common-set-supported-currencies.js
 
-    # yalc add @ledgerhq/live-common
+    yalc add @ledgerhq/live-common
     #yalc add @ledgerhq/ledger-core
 
     # Ensure versions are matching
     # sed -i -- 's/5.26.0/5.28.0/g' package.json
     #sed -i -- 's/5.19.1/5.22.0/g' package.json
 
-    # yarn install
+    yarn install
 )
 
 
