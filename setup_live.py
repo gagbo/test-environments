@@ -7,7 +7,11 @@ from pathlib import Path
 import subprocess
 
 node_major_version = 12
+
 live_workdir_path = '.live_sources'
+live_common_workdir_path = live_workdir_path + '/ledger-live-common'
+live_common_CLI_workdir_path = live_workdir_path + '/ledger-live-common/cli'
+live_desktop_workdir_path = live_workdir_path + '/ledger-live-desktop'
 
 script_dir = os.path.dirname(__file__)
 
@@ -30,7 +34,8 @@ def get_product_configuration(coin, product):
 
 
 coin = sys.argv[1].lower()
-print(get_product_configuration(coin, 'live'))
+config = get_product_configuration(coin, 'live')
+print(config)
 
 def run_command(command, cwd = None):
 
@@ -108,11 +113,36 @@ def prepare():
     create_workdir()
     clear_cache()
 
-def clone_live_common():
-    out, err = run_command(['git', 'clone', sources[]], live_workdir_path)
+def run(cmd, path):
+    out, err = run_command(cmd.split(), path)
     print(out)
     print(err)
 
-config = get_product_configuration(coin)
+def clone(app, path):
+    repo = config[app]['repository']
+    branch = config[app]['branch']
+
+    run("git clone {}".format(repo), live_workdir_path)
+    run("git checkout {}".format(branch), path)
+
+
 prepare()
-clone_live_common()
+
+# Live-common
+clone('live_common', live_common_workdir_path)
+run('yarn install', live_common_workdir_path)
+run('yalc publish --push', live_common_workdir_path)
+
+# Live-common: CLI
+run('yalc add @ledgerhq/live-common', live_common_CLI_workdir_path)
+run('yarn install', live_common_CLI_workdir_path)
+run('yarn build', live_common_CLI_workdir_path)
+
+# Live Desktop
+clone('live_desktop', live_desktop_workdir_path)
+run('yalc add @ledgerhq/live-common', live_desktop_workdir_path)
+run('yarn install', live_desktop_workdir_path)
+
+# Display info
+print("node ${}/bin/index.js".format(live_common_CLI_workdir_path))
+print("cd {} && yarn start".format(live_desktop_workdir_path))
