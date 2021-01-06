@@ -80,9 +80,16 @@ def check_node_version(node_version):
         print(f"Current version: {out}")
         sys.exit(1)
 
+def remove_dir(dir_path):
+    # Prevent permission denied error
+    if operating_system == "Windows":
+        os.system('rmdir /q /s "{}" 2>NUL'.format(dir_path))
+    else:
+        shutil.rmtree(dir_path)
+
 def create_workdir():
     if os.path.isdir(workdir_path):
-            shutil.rmtree(workdir_path)
+        remove_dir(workdir_path)
     
     try:
         os.mkdir(workdir_path)
@@ -111,7 +118,7 @@ def clear_cache():
         return
 
     for cache in cache_folders:
-        shutil.rmtree(home + cache, ignore_errors=True)
+        remove_dir(home + cache)
 
 def prepare():
     check_tooling()
@@ -145,5 +152,5 @@ run('yalc add @ledgerhq/live-common', live_desktop_workdir_path)
 run('yarn install', live_desktop_workdir_path)
 
 # Display info
-print("node ${}/bin/index.js".format(live_common_CLI_workdir_path))
+print("node {}/bin/index.js".format(live_common_CLI_workdir_path))
 print("cd {} && yarn start".format(live_desktop_workdir_path))
