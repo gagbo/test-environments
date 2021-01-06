@@ -42,7 +42,7 @@ def run(command, cwd = None):
         cwd = Path.home()
     
     try:
-        p = subprocess.Popen(command.split(), stdout=subprocess.PIPE, stderr=subprocess.PIPE, universal_newlines=True, cwd=cwd, shell=True)
+        p = subprocess.Popen(command.split(), stdout=subprocess.PIPE, stderr=subprocess.PIPE, universal_newlines=True, cwd=cwd)
         output, err = p.communicate()
         print(output)
         print(err)
