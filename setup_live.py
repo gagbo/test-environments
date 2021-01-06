@@ -40,9 +40,13 @@ config = get_product_configuration(coin, 'live')
 def run(command, cwd = None):
     if cwd is None:
         cwd = Path.home()
+
+    shell = False
+    if operating_system == "Windows":
+        shell = True
     
     try:
-        p = subprocess.Popen(command.split(), stdout=subprocess.PIPE, stderr=subprocess.PIPE, universal_newlines=True, cwd=cwd)
+        p = subprocess.Popen(command.split(), stdout=subprocess.PIPE, stderr=subprocess.PIPE, universal_newlines=True, cwd=cwd, shell=shell)
         output, err = p.communicate()
         print(output)
         print(err)
@@ -60,11 +64,11 @@ def check_tooling():
     for tool in tools:
         out, err = run(tool)
         if out is None:
-            print(f"Error: {tool[0]} does not seem to be installed on the system")
+            print(f"Error: {tool.split()[0]} does not seem to be installed on the system")
             print(err)
             sys.exit(1)
         else:
-            print(f"{tool[0]}: {out.rstrip()}\t{err.rstrip()}")
+            print(f"{tool}: {out.rstrip()}\t{err.rstrip()}")
 
 def check_node_version(node_version):
     if operating_system == 'Windows':
