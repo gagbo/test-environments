@@ -8,12 +8,13 @@ import subprocess
 
 node_major_version = 12
 
-live_workdir_path = '.live_sources'
-live_common_workdir_path = live_workdir_path + '/ledger-live-common'
-live_common_CLI_workdir_path = live_workdir_path + '/ledger-live-common/cli'
-live_desktop_workdir_path = live_workdir_path + '/ledger-live-desktop'
+workdir_path = '.live_sources'
+live_common_workdir_path = workdir_path + '/ledger-live-common'
+live_common_CLI_workdir_path = workdir_path + '/ledger-live-common/cli'
+live_desktop_workdir_path = workdir_path + '/ledger-live-desktop'
 
 script_dir = os.path.dirname(__file__)
+operating_system = platform.system()
 
 class EmptyVariable(Exception):
     pass
@@ -35,29 +36,29 @@ def get_product_configuration(coin, product):
 
 coin = sys.argv[1].lower()
 config = get_product_configuration(coin, 'live')
-print(config)
 
-def run_command(command, cwd = None):
-
+def run(command, cwd = None):
     if cwd is None:
         cwd = Path.home()
     
     try:
-        p = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE, universal_newlines=True, cwd=cwd)
+        p = subprocess.Popen(command.split(), stdout=subprocess.PIPE, stderr=subprocess.PIPE, universal_newlines=True, cwd=cwd, shell=True)
         output, err = p.communicate()
+        print(output)
+        print(err)
         return output, err
     except Exception as e:
         return None, str(e)
 
 def check_tooling():
     tools = [
-        ['yarn', '--version'],
-        ['yalc', '--version'],
-        ['node', '--version'],
+        'yarn --version',
+        'yalc --version',
+        'node --version',
     ]
 
     for tool in tools:
-        out, err = run_command(tool)
+        out, err = run(tool)
         if out is None:
             print(f"Error: {tool[0]} does not seem to be installed on the system")
             print(err)
@@ -66,34 +67,35 @@ def check_tooling():
             print(f"{tool[0]}: {out.rstrip()}\t{err.rstrip()}")
 
 def check_node_version(node_version):
-    out, _ = run_command(['node', '--version'])
+    if operating_system == 'Windows':
+        return
+
+    out, _ = run('node --version')
     if f"v{node_version}" not in out:
         print(f"Error: node version should be v{node_version}")
         print(f"Current version: {out}")
         sys.exit(1)
 
 def create_workdir():
-    if os.path.isdir(live_workdir_path):
-            shutil.rmtree(live_workdir_path)
+    if os.path.isdir(workdir_path):
+            shutil.rmtree(workdir_path)
     
     try:
-        os.mkdir(live_workdir_path)
+        os.mkdir(workdir_path)
     except OSError:
         print ("Creation of the workdir directory failed")
         sys.exit(1)
 
-# Clear cache
 def clear_cache():
-    os = platform.system()
     home = str(Path.home())
  
-    if os == 'Darwin':
+    if operating_system == 'Darwin':
         cache_folders = [
             '/.yalc', 
             '/.yarn', 
             '/.npm'
             ]
-    elif os == 'Windows':
+    elif operating_system == 'Windows':
         cache_folders = [
             r'\AppData\Local\Yalc', 
             r'\AppData\Local\Yarn\cache', 
@@ -113,16 +115,11 @@ def prepare():
     create_workdir()
     clear_cache()
 
-def run(cmd, path):
-    out, err = run_command(cmd.split(), path)
-    print(out)
-    print(err)
-
 def clone(app, path):
     repo = config[app]['repository']
     branch = config[app]['branch']
 
-    run("git clone {}".format(repo), live_workdir_path)
+    run("git clone {}".format(repo), workdir_path)
     run("git checkout {}".format(branch), path)
 
 
