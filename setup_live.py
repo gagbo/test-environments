@@ -85,7 +85,7 @@ def remove_dir(dir_path):
     if operating_system == "Windows":
         os.system('rmdir /q /s "{}" 2>NUL'.format(dir_path))
     else:
-        shutil.rmtree(dir_path)
+        shutil.rmtree(dir_path, ignore_errors=True)
 
 def create_workdir():
     if os.path.isdir(workdir_path):
