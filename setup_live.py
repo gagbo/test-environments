@@ -148,7 +148,10 @@ run('yarn build', live_common_CLI_workdir_path)
 
 # Live Desktop
 clone('live_desktop', live_desktop_workdir_path)
+
 run('yalc add @ledgerhq/live-common', live_desktop_workdir_path)
+run('yarn install', live_desktop_workdir_path)
+run("yarn-deduplicate", live_desktop_workdir_path)
 run('yarn install', live_desktop_workdir_path)
 
 # Display info

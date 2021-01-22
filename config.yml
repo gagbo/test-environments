@@ -102,3 +102,15 @@ polkadot:
         live_mobile:
             repository: git@github.com:Ledger-Coin-Integration-team/ledger-live-mobile.git
             branch: polkadot
+
+polkadot_release:
+    live:
+        live_common:
+            repository: git@github.com:LedgerHQ/ledger-live-common.git
+            branch: master
+        live_desktop:
+            repository: git@github.com:Ledger-Coin-Integration-team/ledger-live-desktop.git
+            branch: polkadot
+        live_mobile:
+            repository: git@github.com:Ledger-Coin-Integration-team/ledger-live-mobile.git
+            branch: polkadot
