@@ -27,32 +27,34 @@ The `setup_live.sh` script:
 
 ### Run
 
+#### Option 0: Do not compile libcore (Coin implemented using JS)
+
+```
+$ ./setup_live.py <coin name>
+```
+
 #### Option 1: Compile libcore
 
 ```
 $ ./setup_live.sh <coin name> build
-$ ledger-live . . .
 ```
 
 Example:
 
 ```
 $ ./setup_live.sh algorand build
-$ ledger-live sync -c algorand
 ```
 
 #### Option 2: Download libcore
 
 ```
 $ ./setup_live.sh <coin name> 
-$ ledger-live . . .
 ```
 
 Example:
 
 ```
 $ ./setup_live.sh algorand
-$ ledger-live sync -c algorand
 ```
 
 #### Option 3: Provide a compiled libcore
@@ -75,6 +77,10 @@ $ ledger-live sync -c algorand
 * MainNet: `algorand`
 * TestNet: `algorand_test`
 * Bot dev: `algorand_bot_dev`
+
+**Polkadot**
+* Coin Integration; `polkadot`
+* Final release: `polkadot_release`
 
 ### Note: use of `source`
 
