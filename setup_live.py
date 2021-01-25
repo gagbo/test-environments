@@ -94,8 +94,12 @@ def check_tooling():
         'yarn --version',
         'yalc --version',
         'node --version',
-        'bundle --version'
     ]
+
+    if mobile is not None:
+        tools.append('ruby --version')
+        tools.append('watchman --version')
+        tools.append('bundle --version')
 
     for tool in tools:
         print(tool, '\t', end='')
