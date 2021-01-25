@@ -5,15 +5,20 @@ import platform
 import shutil
 from pathlib import Path
 import subprocess
+from termcolor import colored
+from multiprocessing import Process
 
 node_major_version = 12
 
-workdir_path = '.live_sources'
+emulator = 'Pixel_XL_API_30'
+
+script_dir = os.path.dirname(os.path.realpath(__file__))
+workdir_path = script_dir + '/.live_sources'
 live_common_workdir_path = workdir_path + '/ledger-live-common'
 live_common_CLI_workdir_path = workdir_path + '/ledger-live-common/cli'
 live_desktop_workdir_path = workdir_path + '/ledger-live-desktop'
+live_mobile_workdir_path = workdir_path + '/ledger-live-mobile'
 
-script_dir = os.path.dirname(__file__)
 operating_system = platform.system()
 
 class EmptyVariable(Exception):
@@ -35,46 +40,76 @@ def get_product_configuration(coin, product):
 
 
 coin = sys.argv[1].lower()
+
+if len(sys.argv) < 3:
+    mobile = None
+else:
+    mobile = sys.argv[2].lower()
+
 config = get_product_configuration(coin, 'live')
 
-def run(command, cwd = None):
+def run(command, cwd = None, quiet=False):
     if cwd is None:
         cwd = Path.home()
 
     shell = False
     if operating_system == "Windows":
         shell = True
-    
-    try:
-        p = subprocess.Popen(command.split(), stdout=subprocess.PIPE, stderr=subprocess.PIPE, universal_newlines=True, cwd=cwd, shell=shell)
-        output, err = p.communicate()
-        print(output)
-        print(err)
-        return output, err
-    except Exception as e:
-        return None, str(e)
+
+    output = []
+    errors = []
+
+    with subprocess.Popen(command.split(), stdout=subprocess.PIPE, stderr=subprocess.PIPE, bufsize=1,
+        universal_newlines=True, cwd=cwd) as p:
+        for line in p.stdout:
+            if quiet == False:
+                print(line, end='')
+            output.append(line)
+            
+        for err in p.stderr:
+            if quiet == False:
+                print(colored(err, 'red'))
+            errors.append(err)
+  
+    return '\n'.join(output), '\n'.join(errors)
+
+    # try:
+    #     p = subprocess.Popen(command.split(), stdout=subprocess.PIPE, stderr=subprocess.PIPE, universal_newlines=True, cwd=cwd, shell=shell)
+    #     output, err = p.communicate()
+    #     print(output)
+    #     print(err)
+    #     return output, err
+    # except Exception as e:
+    #     return None, str(e)
+
+def run_detached(command, cwd):
+    shell = False
+    if operating_system == "Windows":
+        shell = True
+
+    subprocess.Popen(command.split(), universal_newlines=True, cwd=cwd, shell=True)
 
 def check_tooling():
     tools = [
         'yarn --version',
         'yalc --version',
         'node --version',
+        'bundle --version'
     ]
 
     for tool in tools:
+        print(tool, '\t', end='')
         out, err = run(tool)
-        if out is None:
+        if len(out) == 0:
             print(f"Error: {tool.split()[0]} does not seem to be installed on the system")
             print(err)
             sys.exit(1)
-        else:
-            print(f"{tool}: {out.rstrip()}\t{err.rstrip()}")
 
 def check_node_version(node_version):
     if operating_system == 'Windows':
         return
 
-    out, _ = run('node --version')
+    out, _ = run('node --version', quiet=True)
     if f"v{node_version}" not in out:
         print(f"Error: node version should be v{node_version}")
         print(f"Current version: {out}")
@@ -113,7 +148,7 @@ def clear_cache():
             r'\AppData\Roaming\npm-cache'
             ]
 
-    data = input("Do you want to clear the cache?\n(" + ', '.join(cache_folders) + ' will be cleared)\nyN\n')
+    data = input("Do you want to clear the cache?\n(" + ', '.join(cache_folders) + ' will be cleared)\nyN ')
     if data.lower() != 'y':
         return
 
@@ -137,22 +172,56 @@ def clone(app, path):
 prepare()
 
 # Live-common
+print(colored(' LIVE-COMMON ', 'blue', 'on_yellow'))
 clone('live_common', live_common_workdir_path)
 run('yarn install', live_common_workdir_path)
 run('yalc publish --push', live_common_workdir_path)
 
-# Live-common: CLI
+# # Live-common: CLI
+print(colored(' LIVE-COMMON: CLI ', 'blue', 'on_yellow'))
+
 run('yalc add @ledgerhq/live-common', live_common_CLI_workdir_path)
 run('yarn install', live_common_CLI_workdir_path)
 run('yarn build', live_common_CLI_workdir_path)
 
 # Live Desktop
+print(colored(' DESKTOP ', 'blue', 'on_yellow'))
+
 clone('live_desktop', live_desktop_workdir_path)
 
 run('yalc add @ledgerhq/live-common', live_desktop_workdir_path)
 run('yarn install', live_desktop_workdir_path)
 run("yarn-deduplicate", live_desktop_workdir_path)
 run('yarn install', live_desktop_workdir_path)
+
+def yarn_mobile():
+    run('yarn start', live_mobile_workdir_path)
+
+# Mobile
+if mobile is not None:
+    print(colored(' MOBILE ', 'blue', 'on_yellow'))
+
+    clone('live_mobile', live_mobile_workdir_path)
+
+    run('yalc add @ledgerhq/live-common', live_mobile_workdir_path)
+    run('bundle install', live_mobile_workdir_path) 
+    run('yarn install', live_mobile_workdir_path) 
+    run('yarn', live_mobile_workdir_path)
+
+    p = Process(target=yarn_mobile)
+    p.start()
+
+    if mobile == 'android':
+        print(colored('Run Android', 'blue'))
+        run('adb start-server', live_mobile_workdir_path)
+        run(f"emulator -avd ${emulator}", live_mobile_workdir_path)
+
+        run('yarn run android', live_mobile_workdir_path)
+
+    elif mobile == 'ios':
+        print(colored('Run iOS', 'blue'))
+        run('yarn run ios', live_mobile_workdir_path)
+
 
 # Display info
 print("node {}/bin/index.js".format(live_common_CLI_workdir_path))
