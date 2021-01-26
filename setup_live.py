@@ -6,7 +6,6 @@ import shutil
 from pathlib import Path
 import subprocess
 from termcolor import colored
-from multiprocessing import Process
 
 node_major_version = 12
 
@@ -48,7 +47,7 @@ else:
 
 config = get_product_configuration(coin, 'live')
 
-def run(command, cwd = None, quiet=False):
+def run(command, cwd=None, quiet=False):
     if cwd is None:
         cwd = Path.home()
 
@@ -56,38 +55,31 @@ def run(command, cwd = None, quiet=False):
     if operating_system == "Windows":
         shell = True
 
-    output = []
-    errors = []
+    out = []
+    err = []
 
-    with subprocess.Popen(command.split(), stdout=subprocess.PIPE, stderr=subprocess.PIPE, bufsize=1,
-        universal_newlines=True, cwd=cwd) as p:
-        for line in p.stdout:
+    with subprocess.Popen(
+            command.split(), 
+            stdout=subprocess.PIPE, 
+            stderr=subprocess.PIPE, 
+            bufsize=1,
+            universal_newlines=True,
+            shell=shell,
+            cwd=cwd) as p:
+
+        for p_out in p.stdout:
+            out.append(p_out)
             if quiet == False:
-                print(line, end='')
-            output.append(line)
+                print(p_out, end='')
             
-        for err in p.stderr:
+        for p_err in p.stderr:
+            err.append(p_err)
             if quiet == False:
-                print(colored(err, 'red'))
-            errors.append(err)
+                print(colored(p_err, 'red'))
+
+        _, _ = p.communicate()
   
-    return '\n'.join(output), '\n'.join(errors)
-
-    # try:
-    #     p = subprocess.Popen(command.split(), stdout=subprocess.PIPE, stderr=subprocess.PIPE, universal_newlines=True, cwd=cwd, shell=shell)
-    #     output, err = p.communicate()
-    #     print(output)
-    #     print(err)
-    #     return output, err
-    # except Exception as e:
-    #     return None, str(e)
-
-def run_detached(command, cwd):
-    shell = False
-    if operating_system == "Windows":
-        shell = True
-
-    subprocess.Popen(command.split(), universal_newlines=True, cwd=cwd, shell=True)
+    return '\n'.join(out), '\n'.join(err)
 
 def check_tooling():
     tools = [
@@ -120,11 +112,13 @@ def check_node_version(node_version):
         sys.exit(1)
 
 def remove_dir(dir_path):
+    print(colored('Deleting ' + dir_path, 'yellow'), end='')
     # Prevent permission denied error
     if operating_system == "Windows":
         os.system('rmdir /q /s "{}" 2>NUL'.format(dir_path))
     else:
         shutil.rmtree(dir_path, ignore_errors=True)
+    print(colored(' [done]', 'yellow'))
 
 def create_workdir():
     if os.path.isdir(workdir_path):
@@ -138,7 +132,7 @@ def create_workdir():
 
 def clear_cache():
     home = str(Path.home())
- 
+
     if operating_system == 'Darwin':
         cache_folders = [
             '/.yalc', 
@@ -175,6 +169,8 @@ def clone(app, path):
 
 prepare()
 
+
+
 # Live-common
 print(colored(' LIVE-COMMON ', 'blue', 'on_yellow'))
 clone('live_common', live_common_workdir_path)
@@ -198,9 +194,6 @@ run('yarn install', live_desktop_workdir_path)
 run("yarn-deduplicate", live_desktop_workdir_path)
 run('yarn install', live_desktop_workdir_path)
 
-def yarn_mobile():
-    run('yarn start', live_mobile_workdir_path)
-
 # Mobile
 if mobile is not None:
     print(colored(' MOBILE ', 'blue', 'on_yellow'))
@@ -209,11 +202,13 @@ if mobile is not None:
 
     run('yalc add @ledgerhq/live-common', live_mobile_workdir_path)
     run('bundle install', live_mobile_workdir_path) 
-    run('yarn install', live_mobile_workdir_path) 
-    run('yarn', live_mobile_workdir_path)
+    run('yarn install', live_mobile_workdir_path)
 
-    p = Process(target=yarn_mobile)
-    p.start()
+    for i in range(0, 3):
+        run('yarn pod', live_mobile_workdir_path)
+
+    run('yarn', live_mobile_workdir_path)
+    run('yarn start &', live_mobile_workdir_path)
 
     if mobile == 'android':
         print(colored('Run Android', 'blue'))
