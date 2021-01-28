@@ -25,13 +25,37 @@ The `setup_live.sh` script:
 * sbt (https://www.scala-sbt.org/)
 * a C++ compiler (g++, clang++, ...)
 
+**Windows**
+
+- Install Git bash
+- Using CMD/PowerShell as Admin: install `windows-build-tools`: `npm install --global windows-build-tools`
+- Using CMD/PowerShell as Admin: install `node-gyp`: `npm install --global node-gyp`
+- Using Git Bash as Admin, run `winpty "<path>\python.exe" -m pip install termcolor` (example: `winpty "C:\Program Files\Python39\python.exe" -m pip install termcolor`)
+
 ### Run
 
 #### Option 0: Do not compile libcore (Coin implemented using JS)
 
+**MacOS/Linux**
 ```
 $ ./setup_live.py <coin name>
 ```
+
+Example:
+```
+$ ./setup_live.py polkadot
+```
+
+**Windows (from Git Bash as Admin)**
+```
+$ winpty "C:\Program Files\Python39\python.exe" setup_live.py <coin name>
+```
+
+Example:
+```
+$ winpty "C:\Program Files\Python39\python.exe" setup_live.py polkadot
+```
+
 
 #### Option 1: Compile libcore
 

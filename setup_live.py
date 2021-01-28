@@ -1,22 +1,22 @@
+#!/usr/bin/python
+
 import yaml
 import sys 
 import os
 import platform
 import shutil
+import fileinput
 from pathlib import Path
 import subprocess
 from termcolor import colored
 
 node_major_version = 12
+verbose_mode = True
 
 emulator = 'Pixel_XL_API_30'
 
 script_dir = os.path.dirname(os.path.realpath(__file__))
-workdir_path = script_dir + '/.live_sources'
-live_common_workdir_path = workdir_path + '/ledger-live-common'
-live_common_CLI_workdir_path = workdir_path + '/ledger-live-common/cli'
-live_desktop_workdir_path = workdir_path + '/ledger-live-desktop'
-live_mobile_workdir_path = workdir_path + '/ledger-live-mobile'
+workdir_path = os.path.join(script_dir, '.live_sources')
 
 operating_system = platform.system()
 
@@ -39,21 +39,27 @@ def get_product_configuration(coin, product):
 
 
 coin = sys.argv[1].lower()
+config = get_product_configuration(coin, 'live')
 
 if len(sys.argv) < 3:
     mobile = None
 else:
     mobile = sys.argv[2].lower()
 
-config = get_product_configuration(coin, 'live')
+"""
+Run a system command
+"""
 
-def run(command, cwd=None, quiet=False):
+def run(command, cwd=None, verbose=False, silent=False):
     if cwd is None:
         cwd = Path.home()
 
     shell = False
     if operating_system == "Windows":
         shell = True
+
+    if verbose_mode == True:
+        command += ' --verbose'
 
     out = []
     err = []
@@ -69,12 +75,12 @@ def run(command, cwd=None, quiet=False):
 
         for p_out in p.stdout:
             out.append(p_out)
-            if quiet == False:
+            if not silent:
                 print(p_out, end='')
             
         for p_err in p.stderr:
             err.append(p_err)
-            if quiet == False:
+            if not silent:
                 print(colored(p_err, 'red'))
 
         _, _ = p.communicate()
@@ -159,6 +165,9 @@ def prepare():
     create_workdir()
     clear_cache()
 
+"""
+Clone a repository
+"""
 def clone(app, path):
     repo = config[app]['repository']
     branch = config[app]['branch']
@@ -166,36 +175,58 @@ def clone(app, path):
     run("git clone {}".format(repo), workdir_path)
     run("git checkout {}".format(branch), path)
 
+"""
+Fix package.json to make it compatible with Windows
+"""
+def fix_package(path):
+    if operating_system == "Windows": 
+        package_file = os.path.join(path, 'package.json')
+        for line in fileinput.input(package_file, inplace=True):
+            print(line.replace("./scripts/", "bash ./scripts/"), end='')
+            print(line.replace("'.js,.ts'", ".js,.ts"), end='')
 
 prepare()
 
-
-
 # Live-common
 print(colored(' LIVE-COMMON ', 'blue', 'on_yellow'))
+
+live_common_workdir_path = os.path.join(workdir_path, 'ledger-live-common')
+
 clone('live_common', live_common_workdir_path)
-run('yarn install', live_common_workdir_path)
+
+fix_package(live_common_workdir_path)
+
+run('yarn install', live_common_workdir_path, v=verbose_mode)
 run('yalc publish --push', live_common_workdir_path)
 
-# # Live-common: CLI
+# # # Live-common: CLI
 print(colored(' LIVE-COMMON: CLI ', 'blue', 'on_yellow'))
 
+live_common_CLI_workdir_path = os.path.join(workdir_path, 'ledger-live-common', 'cli')
+
 run('yalc add @ledgerhq/live-common', live_common_CLI_workdir_path)
-run('yarn install', live_common_CLI_workdir_path)
-run('yarn build', live_common_CLI_workdir_path)
+
+fix_package(live_common_CLI_workdir_path)
+
+run('yarn install', live_common_CLI_workdir_path, v=verbose_mode)
+run('yarn build', live_common_CLI_workdir_path, v=verbose_mode)
 
 # Live Desktop
 print(colored(' DESKTOP ', 'blue', 'on_yellow'))
 
+live_desktop_workdir_path = os.path.join(workdir_path, 'ledger-live-desktop')
+
 clone('live_desktop', live_desktop_workdir_path)
 
 run('yalc add @ledgerhq/live-common', live_desktop_workdir_path)
-run('yarn install', live_desktop_workdir_path)
-run("yarn-deduplicate", live_desktop_workdir_path)
-run('yarn install', live_desktop_workdir_path)
+run('yarn install', live_desktop_workdir_path, v=verbose_mode)
+run("yarn-deduplicate", live_desktop_workdir_path, v=verbose_mode)
+run('yarn install', live_desktop_workdir_path, v=verbose_mode)
 
 # Mobile
 if mobile is not None:
+    live_mobile_workdir_path = os.path.join(workdir_path, 'ledger-live-mobile')
+
     print(colored(' MOBILE ', 'blue', 'on_yellow'))
 
     clone('live_mobile', live_mobile_workdir_path)
