@@ -196,7 +196,7 @@ clone('live_common', live_common_workdir_path)
 
 fix_package(live_common_workdir_path)
 
-run('yarn install', live_common_workdir_path, v=verbose_mode)
+run('yarn install', live_common_workdir_path, verbose=verbose_mode)
 run('yalc publish --push', live_common_workdir_path)
 
 # # # Live-common: CLI
@@ -208,8 +208,8 @@ run('yalc add @ledgerhq/live-common', live_common_CLI_workdir_path)
 
 fix_package(live_common_CLI_workdir_path)
 
-run('yarn install', live_common_CLI_workdir_path, v=verbose_mode)
-run('yarn build', live_common_CLI_workdir_path, v=verbose_mode)
+run('yarn install', live_common_CLI_workdir_path, verbose=verbose_mode)
+run('yarn build', live_common_CLI_workdir_path, verbose=verbose_mode)
 
 # Live Desktop
 print(colored(' DESKTOP ', 'blue', 'on_yellow'))
@@ -219,9 +219,9 @@ live_desktop_workdir_path = os.path.join(workdir_path, 'ledger-live-desktop')
 clone('live_desktop', live_desktop_workdir_path)
 
 run('yalc add @ledgerhq/live-common', live_desktop_workdir_path)
-run('yarn install', live_desktop_workdir_path, v=verbose_mode)
-run("yarn-deduplicate", live_desktop_workdir_path, v=verbose_mode)
-run('yarn install', live_desktop_workdir_path, v=verbose_mode)
+run('yarn install', live_desktop_workdir_path, verbose=verbose_mode)
+run("yarn-deduplicate", live_desktop_workdir_path, verbose=verbose_mode)
+run('yarn install', live_desktop_workdir_path, verbose=verbose_mode)
 
 # Mobile
 if mobile is not None:
