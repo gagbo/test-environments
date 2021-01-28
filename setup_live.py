@@ -58,7 +58,7 @@ def run(command, cwd=None, verbose=False, silent=False):
     if operating_system == "Windows":
         shell = True
 
-    if verbose_mode == True:
+    if verbose == True:
         command += ' --verbose'
 
     out = []
