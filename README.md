@@ -11,6 +11,7 @@ Scripts to setup reproductible test environments for `live-common` and `Vault`.
 * Yarn
 * Node 12 (Linux: `nvm install 12`; macOS: `nvm install 12 64`)
 * yalc (https://www.npmjs.com/package/yalc)
+* yarn-deduplicate: `npm i -g yarn-deduplicate`
 
 **Windows**
 

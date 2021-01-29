@@ -123,6 +123,7 @@ def check_tooling():
         'yarn --version',
         'yalc --version',
         'node --version',
+        'yarn-deduplicate --version'
     ]
 
     if mobile is not None:
