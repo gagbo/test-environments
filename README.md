@@ -4,10 +4,8 @@ Scripts to setup reproductible test environments for `live-common` and `Vault`.
 
 ## Prerequisites
 
-* OS: Linux or macOS
 * Nvm (https://github.com/nvm-sh/nvm)
 * Python 3 (https://www.python.org/downloads/)
-* `PyYAML` Python package (https://pypi.org/project/PyYAML/)
 * Yarn
 * Node 12 (Linux: `nvm install 12`; macOS: `nvm install 12 64`)
 * yalc (https://www.npmjs.com/package/yalc)
@@ -26,22 +24,22 @@ Scripts to setup reproductible test environments for `live-common` and `Vault`.
 
 **MacOS/Linux**
 ```
-$ ./setup_live.py <coin name>
+$ ./setup_live.py -c <coin name>
 ```
 
 Example:
 ```
-$ ./setup_live.py polkadot
+$ ./setup_live.py -c polkadot
 ```
 
 **Windows (from Git Bash as Admin)**
 ```
-$ winpty "C:\Program Files\Python39\python.exe" setup_live.py <coin name>
+$ winpty "C:\Program Files\Python39\python.exe" setup_live.py -c <coin name>
 ```
 
 Example:
 ```
-$ winpty "C:\Program Files\Python39\python.exe" setup_live.py polkadot
+$ winpty "C:\Program Files\Python39\python.exe" setup_live.py -c polkadot
 ```
 
 

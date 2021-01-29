@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/env python3
 
 import yaml
 import sys, getopt
@@ -21,7 +21,7 @@ class OS(Enum):
 operating_system: OS = None
 
 node_major_version = 12
-verbose_mode = True
+verbose_mode = False
 
 emulator = 'Pixel_XL_API_30'
 
