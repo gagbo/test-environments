@@ -8,7 +8,8 @@ import shutil
 import fileinput
 from pathlib import Path
 import subprocess
-from termcolor import colored
+from termcolor import *
+import colorama
 from enum import Enum
 
 class OS(Enum):
@@ -194,6 +195,7 @@ def clear_cache():
 Ensure that the prerequisites are met
 """
 def prepare():
+    colorama.init() # fix git bash colored stdout issues
     check_tooling()
     check_node_version(node_major_version)
     create_workdir()
