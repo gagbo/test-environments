@@ -216,8 +216,7 @@ def fix_package(path):
     if operating_system == OS.WINDOWS:
         package_file = os.path.join(path, 'package.json')
         for line in fileinput.input(package_file, inplace=True):
-            print(line.replace("./scripts/", "bash ./scripts/"), end='')
-            print(line.replace("'.js,.ts'", ".js,.ts"), end='')
+            print(line.replace("./scripts/", "bash ./scripts/").replace("'.js,.ts'", ".js,.ts"), end='')
 
 prepare()
 
