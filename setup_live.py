@@ -19,7 +19,7 @@ class OS(Enum):
 operating_system: OS = None
 
 node_major_version = 12
-verbose_mode = False
+verbose_mode = True
 
 emulator = 'Pixel_XL_API_30'
 
@@ -66,7 +66,7 @@ def get_product_configuration(coin):
             sys.stderr.write(f"Error: coin {coin} not found\n")
             exit(1)
         except EmptyVariable:
-            sys.stderr.write(f"Error: variable has not been set for {coin} ([{product}])\n")
+            sys.stderr.write(f"Error: variable has not been set for {coin}\n")
             exit(1)
 
     return sources[coin]['live']
@@ -76,7 +76,7 @@ config = get_product_configuration(coin)
 """
 Run a system command
 """
-def run(command, cwd=None, verbose=False, silent=False):
+def run(command, cwd=None, silent=False):
     if cwd is None:
         cwd = Path.home()
 
@@ -84,8 +84,11 @@ def run(command, cwd=None, verbose=False, silent=False):
     if operating_system == OS.WINDOWS:
         shell = True
 
-    if verbose:
+    if verbose_mode and ('yarn install' in command or 'yarn build' in command):
         command += ' --verbose'
+
+    if not silent:
+        print(colored(command, 'cyan'))
 
     out = []
     err = []
@@ -109,7 +112,7 @@ def run(command, cwd=None, verbose=False, silent=False):
             if not silent:
                 print(colored(p_err, 'red'))
 
-        _, _ = p.communicate()
+        p.communicate()
   
     return '\n'.join(out), '\n'.join(err)
     
@@ -127,7 +130,6 @@ def check_tooling():
         tools.append('bundle --version')
 
     for tool in tools:
-        print(tool, '\t', end='')
         out, err = run(tool)
         if len(out) == 0:
             print(f"Error: {tool.split()[0]} does not seem to be installed on the system")
@@ -188,6 +190,9 @@ def clear_cache():
     for cache in cache_folders:
         remove_dir(home + cache)
 
+"""
+Ensure that the prerequisites are met
+"""
 def prepare():
     check_tooling()
     check_node_version(node_major_version)
@@ -216,7 +221,7 @@ def fix_package(path):
 
 prepare()
 
-# Live-common
+# LIVE-COMMON
 print(colored(' LIVE-COMMON ', 'blue', 'on_yellow'))
 
 lc_workdir = os.path.join(workdir_path, 'ledger-live-common')
@@ -225,10 +230,13 @@ clone('live_common', lc_workdir)
 
 fix_package(lc_workdir)
 
-run('yarn install', cwd=lc_workdir, verbose=verbose_mode)
-run('yalc publish --push', cwd=lc_workdir)
+for command in [
+        'yarn install',
+        'yalc publish --push'
+    ]:
+    run(command, cwd=lc_workdir)
 
-# # # Live-common: CLI
+# CLI
 print(colored(' LIVE-COMMON: CLI ', 'blue', 'on_yellow'))
 
 cli_workdir = os.path.join(workdir_path, 'ledger-live-common', 'cli')
@@ -237,22 +245,29 @@ run('yalc add @ledgerhq/live-common', cwd=cli_workdir)
 
 fix_package(cli_workdir)
 
-run('yarn install', cwd=cli_workdir, verbose=verbose_mode)
-run('yarn build', cwd=cli_workdir, verbose=verbose_mode)
+for command in [
+        'yarn install',
+        'yarn build'
+    ]:
+    run(command, cwd=cli_workdir)
 
-# Live Desktop
+# DESKTOP
 print(colored(' DESKTOP ', 'blue', 'on_yellow'))
 
 desktop_workdir = os.path.join(workdir_path, 'ledger-live-desktop')
 
 clone('live_desktop', desktop_workdir)
 
-run('yalc add @ledgerhq/live-common', cwd=desktop_workdir)
-run('yarn install', cwd=desktop_workdir, verbose=verbose_mode)
-run("yarn-deduplicate", cwd=desktop_workdir, verbose=verbose_mode)
-run('yarn install', cwd=desktop_workdir, verbose=verbose_mode)
+for command in [
+        'yalc add @ledgerhq/live-common',
+        'yarn install',
+        'yarn-deduplicate',
+        'yarn install'
+    ]:
+    run(command, cwd=desktop_workdir)
 
-# Mobile
+# MOBILE
+# TODO
 if mobile is not None:
     mobile_workdir = os.path.join(workdir_path, 'ledger-live-mobile')
 
@@ -260,9 +275,12 @@ if mobile is not None:
 
     clone('live_mobile', mobile_workdir)
 
-    run('yalc add @ledgerhq/live-common', cwd=mobile_workdir)
-    run('bundle install', cwd=mobile_workdir) 
-    run('yarn install', cwd=mobile_workdir)
+    for command in [
+            'yalc add @ledgerhq/live-common',
+            'bundle install',
+            'yarn install'
+        ]:
+        run(command, cwd=mobile_workdir)
 
     for i in range(0, 3):
         run('yarn pod', mobile_workdir)
@@ -283,5 +301,7 @@ if mobile is not None:
 
 
 # Display info
+print(colored(' Run Common-Live CLI: ', 'blue', 'on_white'))
 print("node {}/bin/index.js".format(cli_workdir))
+print(colored(' Run Desktop: ', 'blue', 'on_white'))
 print("cd {} && yarn start".format(desktop_workdir))
