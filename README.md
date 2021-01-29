@@ -18,7 +18,7 @@ Scripts to setup reproductible test environments for `live-common` and `Vault`.
 - Install Git bash
 - Using CMD/PowerShell as Admin: install `windows-build-tools`: `npm install --global windows-build-tools`
 - Using CMD/PowerShell as Admin: install `node-gyp`: `npm install --global node-gyp`
-- Using Git Bash as Admin, run `winpty "<path>\python.exe" -m pip install termcolor` (example: `winpty "C:\Program Files\Python39\python.exe" -m pip install termcolor`)
+- Using Git Bash as Admin, run `winpty "<path>\python.exe" -m pip install -r requirements.txt` (example: `winpty "C:\Program Files\Python39\python.exe" -m pip install -r requirements.txt`)
 
 ### Run
 
