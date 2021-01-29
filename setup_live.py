@@ -10,6 +10,7 @@ from pathlib import Path
 import subprocess
 from termcolor import *
 import colorama
+import psutil
 from enum import Enum
 
 class OS(Enum):
@@ -29,7 +30,7 @@ workdir_path = os.path.join(script_dir, '.live_sources')
 
 # args
 try:
-    opts, args = getopt.getopt(sys.argv[1:],"hc:m",["coin=","mobile="])
+    opts, args = getopt.getopt(sys.argv[1:],"hc:m:",["coin=","mobile="])
 except getopt.GetoptError:
     print ('setup_live.py -c <coin name> [-m <ios|android>]')
     sys.exit(1)
@@ -77,7 +78,7 @@ config = get_product_configuration(coin)
 """
 Run a system command
 """
-def run(command, cwd=None, silent=False):
+def run(command, cwd=None, silent=False, background=False):
     if cwd is None:
         cwd = Path.home()
 
@@ -94,15 +95,17 @@ def run(command, cwd=None, silent=False):
     out = []
     err = []
 
-    with subprocess.Popen(
+    p = subprocess.Popen(
             command.split(), 
-            stdout=subprocess.PIPE, 
-            stderr=subprocess.PIPE, 
+            stdout=None if background else subprocess.PIPE,
+            stderr=None if background else subprocess.PIPE,
+            stdin=subprocess.PIPE if background else None,
             bufsize=1,
             universal_newlines=True,
             shell=shell,
-            cwd=cwd) as p:
+            cwd=cwd)
 
+    if not background:
         for p_out in p.stdout:
             out.append(p_out)
             if not silent:
@@ -114,9 +117,12 @@ def run(command, cwd=None, silent=False):
                 print(colored(p_err, 'red'))
 
         p.communicate()
-  
-    return '\n'.join(out), '\n'.join(err)
-    
+        return '\n'.join(out), '\n'.join(err)
+
+    else:
+        f = open('pid.txt', 'w')
+        print(p.pid, file=f)
+        f.close()
 
 def check_tooling():
     tools = [
@@ -288,7 +294,11 @@ if mobile is not None:
         run('yarn pod', mobile_workdir)
 
     run('yarn', cwd=mobile_workdir)
-    run('yarn start &', cwd=mobile_workdir)
+    f = open("pid.txt", "w+")
+    pid = f.readline()
+    f.close()
+    if not pid.isnumeric() or not psutil.pid_exists(int(pid)):
+        run('yarn start', cwd=mobile_workdir, background=True)
 
     if mobile == 'android':
         print(colored('Run Android', 'blue'))
@@ -300,7 +310,6 @@ if mobile is not None:
     elif mobile == 'ios':
         print(colored('Run iOS', 'blue'))
         run('yarn run ios', cwd=mobile_workdir)
-
 
 # Display info
 print(colored(' Run Common-Live CLI: ', 'blue', 'on_white'))
