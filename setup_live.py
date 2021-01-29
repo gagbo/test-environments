@@ -269,7 +269,7 @@ clone('live_desktop', desktop_workdir)
 for command in [
         'yalc add @ledgerhq/live-common',
         'yarn install',
-        'yarn-deduplicate',
+        'yarn-deduplicate yarn.lock --strategy highest',
         'yarn install'
     ]:
     run(command, cwd=desktop_workdir)
