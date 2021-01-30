@@ -1,12 +1,12 @@
 # test-environments
 
-Scripts to setup reproductible test environments for `live-common` and `Vault`.
+Scripts to setup reproductible test environments for `live-common`.
 
 ## Prerequisites
 
-* Nvm (https://github.com/nvm-sh/nvm)
 * Python 3 (https://www.python.org/downloads/)
-* Yarn
+* Nvm (https://github.com/nvm-sh/nvm)
+* Yarn (https://classic.yarnpkg.com/en/docs/install/)
 * Node 12 (Linux: `nvm install 12`; macOS: `nvm install 12 64`)
 * yalc (https://www.npmjs.com/package/yalc)
 * yarn-deduplicate: `npm i -g yarn-deduplicate`
@@ -18,9 +18,11 @@ Scripts to setup reproductible test environments for `live-common` and `Vault`.
 - Using CMD/PowerShell as Admin: install `node-gyp`: `npm install --global node-gyp`
 - Using Git Bash as Admin, run `winpty "<path>\python.exe" -m pip install -r requirements.txt` (example: `winpty "C:\Program Files\Python39\python.exe" -m pip install -r requirements.txt`)
 
-### Run
+**Mobile testing**
 
-#### Option 0: Do not compile libcore (Coin implemented using JS)
+// TODO
+
+### Run
 
 **MacOS/Linux**
 ```
