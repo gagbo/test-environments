@@ -1,6 +1,7 @@
 import os
 import fileinput
-from settings import operating_system, OS
+
+from live.settings import operating_system, OS
 
 """
 Fix package.json to make it compatible with Windows

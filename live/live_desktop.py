@@ -2,8 +2,9 @@
 from termcolor import colored
 import colorama
 import os
-from helpers import clone, run
-from settings import workdir_path, desktop_workdir
+
+from live.helpers import clone, run
+from live.settings import workdir_path, desktop_workdir
 
 def build(coin):
     print(colored(' DESKTOP ', 'blue', 'on_yellow'))

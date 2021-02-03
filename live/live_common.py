@@ -1,9 +1,10 @@
 from termcolor import colored
 import colorama
 import os
-from helpers import clone, run
-from settings import workdir_path, cli_workdir
-from quirks import fix_package
+
+from live.helpers import clone, run
+from live.settings import workdir_path, cli_workdir
+from live.quirks import fix_package
 
 def build(coin):
     print(colored(' LIVE-COMMON ', 'blue', 'on_yellow'))

@@ -6,7 +6,7 @@ import sys
 from pathlib import Path
 import shutil
 
-from settings import *
+from live.settings import *
 
 """
 Run a system command
@@ -28,15 +28,22 @@ def run(command, cwd=None, silent=False, background=False):
     out = []
     err = []
 
-    p = subprocess.Popen(
-            command.split(), 
-            stdout=None if background else subprocess.PIPE,
-            stderr=None if background else subprocess.PIPE,
-            stdin=subprocess.PIPE if background else None,
-            bufsize=1,
-            universal_newlines=True,
-            shell=shell,
-            cwd=cwd)
+    p = None
+
+    try:
+        p = subprocess.Popen(
+                command.split(), 
+                stdout=None if background else subprocess.PIPE,
+                stderr=None if background else subprocess.PIPE,
+                stdin=subprocess.PIPE if background else None,
+                bufsize=1,
+                universal_newlines=True,
+                shell=shell,
+                cwd=cwd)
+
+    except Exception as e:
+        print('Command error:', e)
+        sys.exit(1)
 
     if not background:
         for p_out in p.stdout:

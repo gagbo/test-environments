@@ -1,8 +1,13 @@
-from helpers import *
-from settings import *
 import sys
+from pathlib import Path
+from termcolor import *
+import colorama
 
-def check_tooling():
+from live.helpers import run, remove_dir, platform, check_node_version, create_workdir
+from live.settings import operating_system, OS, node_major_version
+
+def check_tooling(mobile):
+    print(colored('Checking required tools...', 'yellow'))
     tools = [
         'yarn --version',
         'yalc --version',
@@ -23,7 +28,7 @@ def check_tooling():
             sys.exit(1)
 
 
-def clear_cache():
+def clear_cache(mobile):
     home = str(Path.home())
 
     if operating_system in (OS.LINUX, OS.MACOS):
@@ -49,23 +54,15 @@ def clear_cache():
         remove_dir(home + cache)
 
     if mobile is not None:
-        remove_dir('/tmp/metro-*')
-
-def set_operating_system():
-    if platform.system() == "Windows":
-        operating_system = OS.WINDOWS
-    elif platform.system() == "Darwin":
-        operating_system = OS.MACOS
-    else:
-        operating_system = OS.LINUX
+        remove_dir('/tmp/metro-*')    
 
 """
 Ensure that the prerequisites are met
 """
-def init(coin_name):
+def setup(coin_name, mobile):
     colorama.init() # fix git bash colored stdout issues
-    check_tooling()
+    check_tooling(mobile)
     check_node_version(node_major_version)
     create_workdir()
-    clear_cache()
+    clear_cache(mobile)
     

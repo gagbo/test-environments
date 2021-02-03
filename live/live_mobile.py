@@ -1,7 +1,8 @@
 import os
 import psutil
-from helpers import clone, run, colored
-from settings import emulator, workdir_path
+
+from live.helpers import clone, run, colored
+from live.settings import emulator, workdir_path
 
 mobile_workdir = os.path.join(workdir_path, 'ledger-live-mobile')
 
@@ -21,7 +22,7 @@ def prepare_mobile(coin):
         ]:
         run(command, cwd=mobile_workdir)
 
-    for i in range(0, 3):
+    for _ in range(0, 3):
         run('yarn pod', mobile_workdir)
 
     run('yarn', cwd=mobile_workdir)

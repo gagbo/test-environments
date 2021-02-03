@@ -24,13 +24,16 @@ class OS(Enum):
     MACOS = 1
     LINUX = 2
 
-global mobile
-mobile = None
-
-global operating_system
 operating_system = None
+if platform.system() == "Windows":
+    operating_system = OS.WINDOWS
+elif platform.system() == "Darwin":
+    operating_system = OS.MACOS
+else:
+    operating_system = OS.LINUX
 
-script_dir = os.path.dirname(os.path.realpath(__file__))
+
+script_dir = os.path.dirname(os.path.realpath(__file__ + "/../"))
 workdir_path = os.path.join(script_dir, '.live_sources')
 cli_workdir = os.path.join(workdir_path, 'ledger-live-common', 'cli')
 desktop_workdir = os.path.join(workdir_path, 'ledger-live-desktop')
