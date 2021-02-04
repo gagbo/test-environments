@@ -1,6 +1,6 @@
 import os
 import subprocess
-from termcolor import *
+from termcolor import colored
 import colorama
 import sys
 from pathlib import Path

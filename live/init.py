@@ -1,7 +1,8 @@
 import sys
 from pathlib import Path
-from termcolor import *
+from termcolor import colored
 import colorama
+import psutil
 
 from live.helpers import run, remove_dir, platform, check_node_version, create_workdir
 from live.settings import operating_system, OS, node_major_version
@@ -56,6 +57,17 @@ def clear_cache(mobile):
     if mobile is not None:
         remove_dir('/tmp/metro-*')    
 
+
+def kill_live():
+    data = input("Do you want to kill the current node processes?\nyN ")
+    if data.lower() != 'y':
+        return
+
+    for proc in psutil.process_iter():
+        if proc.name() == 'node':
+            print(colored(f"Killing {proc}", 'yellow'))
+            proc.kill()
+
 """
 Ensure that the prerequisites are met
 """
@@ -65,4 +77,4 @@ def setup(coin_name, mobile):
     check_node_version(node_major_version)
     create_workdir()
     clear_cache(mobile)
-    
+    kill_live()

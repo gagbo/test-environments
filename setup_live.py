@@ -2,12 +2,10 @@
 
 import sys, getopt
 import os
-from termcolor import *
+from termcolor import colored
 import colorama
 
-from live import helpers
-from live import settings
-from live import init
+from live import helpers, settings, init
 from live import live_common, live_desktop, live_mobile
 
 
@@ -49,6 +47,6 @@ elif mobile == 'ios':
 
 # Display info
 print(colored(' Run Common-Live CLI: ', 'blue', 'on_white'))
-print("node {}/bin/index.js".format(settings.cli_workdir))
+print(f"node \"{settings.cli_workdir}/bin/index.js\"")
 print(colored(' Run Desktop: ', 'blue', 'on_white'))
-print("cd {} && yarn start".format(settings.desktop_workdir))
+print(f"cd \"{settings.desktop_workdir}\" && yarn start")
