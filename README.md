@@ -29,6 +29,8 @@ Scripts to setup reproductible test environments for `live-common`.
 ### Run
 
 **MacOS/Linux**
+
+_Desktop_
 ```
 $ ./setup_live.py -c <coin name>
 ```
@@ -36,6 +38,16 @@ $ ./setup_live.py -c <coin name>
 Example:
 ```
 $ ./setup_live.py -c polkadot
+```
+
+_Mobile only_
+```
+$ ./setup_live.py -c <coin name> -m ios|android
+```
+
+Example:
+```
+$ ./setup_live.py -c polkadot -m ios
 ```
 
 **Windows (from Git Bash as Admin)**

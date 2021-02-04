@@ -15,7 +15,6 @@ def prepare_mobile(coin):
             'watchman watch-del-all',
             'rm -rf node_modules',
             'yalc add @ledgerhq/live-common',
-            "bundle config set --local path 'vendor/bundle'"
             'bundle install',
             'yarn install',
             'yarn-deduplicate yarn.lock --strategy highest',
@@ -38,10 +37,11 @@ def build_android(coin):
     prepare_mobile(coin)
     
     print(colored('Run Android', 'blue'))
-    run('adb start-server', cwd=mobile_workdir)
-    run(f"emulator -avd ${emulator}", cwd=mobile_workdir)
 
-    run('yarn run android', cwd=mobile_workdir)
+    run('adb start-server', cwd=mobile_workdir, background=True)
+    run(f"emulator -no-snapshot -wipe-data -avd {emulator}", cwd=mobile_workdir, background=True)
+
+    run('yarn --verbose run android', cwd=mobile_workdir)
 
 def build_ios(coin):
     prepare_mobile(coin)
