@@ -78,7 +78,7 @@ def remove_dir(dir_path):
     print(colored('Deleting ' + dir_path, 'yellow'), end='')
     # Prevent permission denied error
     if operating_system == OS.WINDOWS:
-        os.system('rmdir /q /s "{}" 2>NUL'.format(dir_path))
+        os.system(f"rmdir /q /s \"{dir_path}\" 2>NUL")
     else:
         shutil.rmtree(dir_path, ignore_errors=True)
     print(colored(' [done]', 'yellow'))
@@ -101,6 +101,6 @@ def clone(coin, layer, cwd):
     repo = coin.config[layer]['repository']
     branch = coin.config[layer]['branch']
     
-    run("git clone {}".format(repo), workdir_path)
-    run("git checkout {}".format(branch), cwd)
+    run(f"git clone {repo}", workdir_path)
+    run(f"git checkout {branch}", cwd)
 
