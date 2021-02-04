@@ -42,10 +42,15 @@ def clear_cache(mobile):
         cache_folders = [
             r'\AppData\Local\Yalc', 
             r'\AppData\Local\Yarn\cache', 
-            r'\AppData\Roaming\npm-cache'
+            r'\AppData\Roaming\npm-cache',
+            r'AppData\Roaming\Ledger Live\Cache'
             ]
-    else:
-        return   
+
+    # Electron cache
+    if operating_system == OS.MACOS:
+        cache_folders.append('/Library/ApplicationSupport/Ledger Live/Cache')
+    elif operating_system == OS.LINUX:
+        cache_folders.append('.config/Ledger Live/Cache')
 
     data = input("Do you want to clear the cache?\n(" + ', '.join(cache_folders) + ' will be cleared)\nyN ')
     if data.lower() != 'y':

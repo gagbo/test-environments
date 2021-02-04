@@ -37,7 +37,8 @@ coin = settings.Coin(coin_name)
 live_common.build(coin)
 
 # DESKTOP
-live_desktop.build(coin)
+if mobile is None:
+    live_desktop.build(coin)
 
 # MOBILE
 if mobile == 'android':

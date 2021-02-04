@@ -15,6 +15,7 @@ def prepare_mobile(coin):
             'watchman watch-del-all',
             'rm -rf node_modules',
             'yalc add @ledgerhq/live-common',
+            "bundle config set --local path 'vendor/bundle'"
             'bundle install',
             'yarn install',
             'yarn-deduplicate yarn.lock --strategy highest',

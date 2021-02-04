@@ -11,6 +11,10 @@ Scripts to setup reproductible test environments for `live-common`.
 * yalc (https://www.npmjs.com/package/yalc)
 * yarn-deduplicate: `npm i -g yarn-deduplicate`
 
+**MacOS/Linux**
+
+- `pip3 install -r requirements.txt`
+
 **Windows**
 
 - Install Git bash

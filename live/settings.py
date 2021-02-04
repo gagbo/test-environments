@@ -35,7 +35,8 @@ else:
 
 script_dir = os.path.dirname(os.path.realpath(__file__ + "/../"))
 workdir_path = os.path.join(script_dir, '.live_sources')
-cli_workdir = os.path.join(workdir_path, 'ledger-live-common', 'cli')
+lc_workdir = os.path.join(workdir_path, 'ledger-live-common')
+cli_workdir = os.path.join(lc_workdir, 'cli')
 desktop_workdir = os.path.join(workdir_path, 'ledger-live-desktop')
 
 
