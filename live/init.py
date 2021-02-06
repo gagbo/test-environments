@@ -21,6 +21,9 @@ def check_tooling(mobile):
         tools.append('watchman --version')
         tools.append('bundle --version')
 
+        if mobile == "android":
+            tools.append('adb --version')
+
     for tool in tools:
         out, err = run(tool)
         if len(out) == 0:

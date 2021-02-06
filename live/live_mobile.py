@@ -1,10 +1,25 @@
 import os
 import psutil
+import wget
+import platform
+from zipfile import ZipFile, ZipInfo
 
 from live.helpers import clone, run, colored
 from live.settings import emulator, workdir_path
 
 mobile_workdir = os.path.join(workdir_path, 'ledger-live-mobile')
+
+class MyZipFile(ZipFile):
+    def _extract_member(self, member, targetpath, pwd):
+        if not isinstance(member, ZipInfo):
+            member = self.getinfo(member)
+
+        targetpath = super()._extract_member(member, targetpath, pwd)
+
+        attr = member.external_attr >> 16
+        if attr != 0:
+            os.chmod(targetpath, attr)
+        return targetpath
 
 def prepare_mobile(coin):
     print(colored(' MOBILE ', 'blue', 'on_yellow'))
@@ -34,6 +49,17 @@ def prepare_mobile(coin):
 
 
 def build_android(coin):
+
+    if not os.path.isdir('platform-tools') or not os.path.isdir('tools'):
+        filename = wget.download("https://dl.google.com/android/repository/platform-tools-latest-" + platform.system().lower() + ".zip")
+        MyZipFile(filename).extractall()
+        filename = wget.download("https://dl.google.com/android/repository/sdk-tools-" + platform.system().lower() + "-4333796.zip")
+        MyZipFile(filename).extractall()
+
+    os.environ['PATH'] += ":" + os.getcwd() + "/platform-tools"
+    os.environ['PATH'] += ":" + os.getcwd() + "/tools"
+    print(os.environ['PATH'])
+
     prepare_mobile(coin)
     
     print(colored('Run Android', 'blue'))
