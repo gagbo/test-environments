@@ -2,6 +2,7 @@ import os
 import psutil
 import wget
 import platform
+import ssl
 from zipfile import ZipFile, ZipInfo
 
 from live.helpers import clone, run, colored
@@ -50,15 +51,17 @@ def prepare_mobile(coin):
 
 def build_android(coin):
 
-    if not os.path.isdir('platform-tools') or not os.path.isdir('tools'):
-        filename = wget.download("https://dl.google.com/android/repository/platform-tools-latest-" + platform.system().lower() + ".zip")
-        MyZipFile(filename).extractall()
-        filename = wget.download("https://dl.google.com/android/repository/sdk-tools-" + platform.system().lower() + "-4333796.zip")
-        MyZipFile(filename).extractall()
+    # if not os.path.isdir('platform-tools') or not os.path.isdir('tools'):
+    #     ssl._create_default_https_context = ssl._create_unverified_context
 
-    os.environ['PATH'] += ":" + os.getcwd() + "/platform-tools"
-    os.environ['PATH'] += ":" + os.getcwd() + "/tools"
-    print(os.environ['PATH'])
+    #     filename = wget.download("https://dl.google.com/android/repository/platform-tools-latest-" + platform.system().lower() + ".zip")
+    #     MyZipFile(filename).extractall()
+    #     filename = wget.download("https://dl.google.com/android/repository/sdk-tools-" + platform.system().lower() + "-4333796.zip")
+    #     MyZipFile(filename).extractall()
+
+    # os.environ['PATH'] += ":" + os.getcwd() + "/platform-tools"
+    # os.environ['PATH'] += ":" + os.getcwd() + "/tools"
+    # print(os.environ['PATH'])
 
     prepare_mobile(coin)
     
